@@ -84,7 +84,7 @@ public class Controller {
 		    					graph.insertEdge(start_node, end_node, random.nextInt(10) - 2);	
 		    			
 
-	    			Pane tmp = graph.getFxGraph(646, 519, 20, 20);
+	    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
 	    			view_pane.getChildren().removeAll(view_pane.getChildren());
 	    			view_pane.getChildren().addAll(tmp.getChildren());
 	            }
@@ -127,7 +127,7 @@ public class Controller {
 						e.printStackTrace();
 					}
 	    		
-	    			Pane tmp = graph.getFxGraph(646, 519, 20, 20);
+	    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
 	    			view_pane.getChildren().removeAll(view_pane.getChildren());
 	    			view_pane.getChildren().addAll(tmp.getChildren());
 	            }
