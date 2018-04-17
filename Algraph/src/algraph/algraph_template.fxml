@@ -41,7 +41,7 @@
                   <Slider fx:id="slider_nodes" layoutX="33.0" layoutY="49.0" max="10.0" min="2.0" prefHeight="16.0" prefWidth="201.0" showTickLabels="true" showTickMarks="true" value="2.0" />
                   <Label fx:id="label_gen" layoutX="67.0" layoutY="259.0" prefHeight="16.0" prefWidth="133.0" />
                   <Button fx:id="full_bellman_ford" layoutX="120.0" layoutY="246.0" mnemonicParsing="false" text="Full Bellman Ford" />
-                  <Button layoutX="20.0" layoutY="246.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Next Step" />
+                  <Button fx:id="step_bellman_ford" layoutX="20.0" layoutY="246.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Next Step" />
                   <TableView fx:id="cost_table" layoutX="12.0" layoutY="325.0" prefHeight="348.0" prefWidth="245.0">
                     <columns>
                       <TableColumn fx:id="node_column" prefWidth="135.0" text="Destination Node" />

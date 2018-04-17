@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,16 +38,20 @@ public class Controller {
 	    @FXML private Slider slider_nodes;
 	    @FXML private ProgressBar progress_gen;
 	    @FXML private Button full_bellman_ford;
+	    @FXML private Button step_bellman_ford; 
 	    @FXML private TableView<Entry<String,Integer>>  cost_table;
 	    @FXML private TableColumn<Entry<String, Integer>, String> node_column;
 	    @FXML private TableColumn<Entry<String, Integer>, Integer> cost_column;
 
 	    
+	    protected Integer step;
 	    protected Graph<String> graph;
+	    Random random;
 	    
 	    @FXML
 	    public void initialize() {
-	    	
+        	random =  new Random((long)1917);
+
 	        node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, String>, ObservableValue<String>>() {
 
 	            @Override
@@ -73,7 +78,7 @@ public class Controller {
 	    		 
 	            @Override
 	            public void handle(MouseEvent t) {
-	            	Random random =  new Random((long)1917);
+	            	step = -1;
 	            	graph = new Graph<String>();
 	    			for(int i = 0; i < slider_nodes.getValue(); i++)
 	    				graph.insertNode(new Node<String>(String.valueOf(i)));
@@ -92,11 +97,10 @@ public class Controller {
 	    	
 	    	file_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
 	    		
-	    		
 	    		@Override
-	            public void handle(MouseEvent t) {
+	            public void handle(MouseEvent t) {  
 	    			HashMap<String, HashMap<String, Integer>> hash = new HashMap<String, HashMap<String, Integer>>();
-
+	    			step = -1;
 		            graph = new Graph<String>();
 	            	FileChooser fileChooser = new FileChooser();
 	    			fileChooser.setTitle("Open Resource File");
@@ -140,6 +144,30 @@ public class Controller {
 	    			HashMap<String, Integer> map = graph.doBellmanFord("0");
 	    	        ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
 	    	        cost_table.setItems(items);
+
+	    		}
+	    	});
+	    	
+	    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	    		@Override
+	            public void handle(MouseEvent t) {
+	    			HashMap<String, Integer> old_items = new HashMap<String, Integer> ();
+	    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFordStep("0");
+	    			if(step < array.size() - 1) {
+	    				step ++;
+	    				if(step > 0)
+	    					old_items = array.get(step - 1);
+	    			}
+	    			
+	    			HashMap<String, Integer> map = array.get(step);
+	    			ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
+	    			if(! old_items.entrySet().equals(map.entrySet()) && map.entrySet().size() > 0) {
+	    				cost_table.getItems().removeAll(cost_table.getItems());
+	    				System.out.println("\n" + old_items.entrySet());
+	    				System.out.println(map.entrySet());
+	    				cost_table.setItems(items);
+	    	        }
+	    	        // cost_table.setItems(items);
 
 	    		}
 	    	});

@@ -131,6 +131,27 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		return M.get(this.V().size() - 1);
 	}
 	
+	public ArrayList<HashMap<String, Integer>> doBellmanFordStep(String start){
+		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
+		for(Node<T> node : this.V()) {
+			M.add(new HashMap<String, Integer> ());
+			M.get(0).put(node.toString(), Integer.MAX_VALUE - 100);
+		}
+		M.get(0).put(start, 0);
+
+		for(int i = 1; i < this.V().size(); i ++) {
+			if(M.get(i).isEmpty())
+				M.add(new HashMap<String, Integer>());
+			for(Node<T> start_node : this.V()) {
+				M.get(i).put(start_node.toString(), M.get(i - 1).get(start_node.toString()));
+				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node)) {
+					M.get(i).put(start_node.toString(), Math.min(M.get(i).get(start_node.toString()), end_node.getValue() + M.get(i - 1).get(end_node.getKey().toString())));
+				}
+			}
+		}		
+		return M;
+	}
+	
 	
 	public Pane getFxGraph(int size_x, int size_y, int offset, double radius) {
 		Pane view = new Pane();
