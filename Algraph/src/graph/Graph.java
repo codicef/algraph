@@ -1,6 +1,7 @@
 package graph;
-
+import javafx.geometry.Point2D;
 import java.util.ArrayList;
+import javafx.scene.transform.Rotate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 
 public class Graph<T extends Comparable<T>> implements IGraph<T> {
 
@@ -173,9 +176,10 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			circle.setCenterY(y_coord);
 			circle.setRadius(radius);
 			circle.setId(node.getKey().toString());
-			circles.put(node.getKey().toString(), circle);
-			text = new Text(x_coord, y_coord, node.getKey().toString());
-			System.out.println(x_coord);
+			circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
+			text = new Text(x_coord, y_coord, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
+			//debug System.out.println(x_coord);
+			//offset
 			if(coloumn % 2 == 0)
 				y_coord += (int) radius * 3;
 			else
@@ -195,6 +199,7 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			view.getChildren().add(circle);
 			view.getChildren().add(text);
 		}
+		//insert edges
 		for (Entry<Node<T>, HashMap<Node<T>, Integer>> start : this.vertexes.entrySet()) {
 			
 			for(Entry <Node<T>, Integer> end : start.getValue().entrySet()) {
@@ -203,9 +208,49 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 				line = new Line(circles.get(start.getKey().toString()).getCenterX(), circles.get(start.getKey().toString()).getCenterY(), circles.get(end.getKey().toString()).getCenterX(), circles.get(end.getKey().toString()).getCenterY());
 				cost = end.getValue();
 				edges.put(line, cost.toString());
+				line.setStrokeWidth(3);
+				//view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString())));
 				view.getChildren().add(line);
 			}
 		}
 		return view;
 	}
+	//serie di prove
+
+	public Line[] drawEdge(Circle u, Circle v) {
+		Line edge = new Line();
+			edge.setStartX(u.getCenterX() );
+			edge.setStartY(u.getCenterY() );
+			edge.setEndX(v.getCenterX());
+			edge.setEndY(v.getCenterY());
+				//"freccetta su"
+		Line up = new Line();
+			up.setStartX(v.getCenterX());
+			up.setStartY(v.getCenterY());
+			up.setEndX(u.getCenterX());
+			up.setEndY(u.getCenterY());
+			//up.setRotate(edge.getRotate() + angle);
+			double angle = GetAngleOfLineBetweenTwoPoints(u.getCenterX(),u.getCenterY(),v.getCenterX(),v.getCenterY());
+			up.getTransforms().add(new Rotate(angle+10,up.getStartX(),up.getStartY()));
+			//up.setRotate(30);
+			up.setStrokeWidth(2);
+		Line down = new Line();
+			down.setStartX(v.getCenterX());
+			down.setStartY(v.getCenterY());
+			down.setEndX(u.getCenterX());
+			down.setEndY(u.getCenterY());
+			down.getTransforms().add(new Rotate(angle ,down.getStartX(),down.getStartY()));
+			//down.set
+			//down.setRotate(edge.getRotate());
+			down.setStrokeWidth(2);
+			Line[] res = {edge, up,down};
+		return res;	
+	}
+	 public static double GetAngleOfLineBetweenTwoPoints(double sx, double sy,double ex, double ey)
+	    {
+	        double xDiff = sx - ex;
+	        double yDiff = sy - ey;
+	        return Math.toDegrees(Math.atan2(yDiff, xDiff));
+	    }
+	
 }

@@ -73,7 +73,6 @@ public class Controller {
 	    	
 	    	
 	    	
-	    	slider_nodes.isShowTickMarks();
 	    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
 	    		 
 	            @Override

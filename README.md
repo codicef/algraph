@@ -8,3 +8,4 @@ Progetto algoritmi 2018
 - Scrivere pseudocodice
 - Gestire eccezioni
 - Scrivere doc/manuale
+- cane
