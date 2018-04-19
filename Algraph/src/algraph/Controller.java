@@ -1,4 +1,5 @@
 	package algraph;
+	
 	import graph.Graph;
 	import graph.Node;
 	import javafx.beans.property.SimpleObjectProperty;
@@ -24,13 +25,12 @@
 	import javafx.scene.layout.Pane;
 	import javafx.stage.FileChooser;
 	import javafx.util.Callback;
-	
 	import java.io.BufferedReader;
 	import java.io.File;
 	import java.io.FileNotFoundException;
 	import java.io.FileReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+	import java.io.PrintWriter;
+	import java.util.ArrayList;
 	import java.util.HashMap;
 	import java.util.Map;
 	import java.util.Map.Entry;

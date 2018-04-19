@@ -1,4 +1,5 @@
 package graph;
+
 import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import javafx.scene.transform.Rotate;
@@ -208,7 +209,14 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 				cost = end.getValue();
 				edges.put(line, cost.toString());
 				line.setStrokeWidth(3);
+				//coordinate non perfette, andrebbe alzato un po' 
+				// e se ci son due archi si sovrappongono lol, con calma
+				double mx = (circles.get(start.getKey().toString()).getCenterX() + circles.get(end.getKey().toString()).getCenterX())/2;
+				double my = (circles.get(start.getKey().toString()).getCenterY() + circles.get(end.getKey().toString()).getCenterY())/2;
+				Point2D center = new Point2D(mx,my);
+				Text costText = new Text(mx,my,cost.toString());
 				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString()), 9, 20, radius));
+				view.getChildren().add(costText);
 			}
 		}
 		return view;
@@ -241,5 +249,6 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		Line[] res = {edge, up, down};
 		return res;	
 	}
+	
 	
 }
