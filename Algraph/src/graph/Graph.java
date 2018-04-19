@@ -208,37 +208,35 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 				cost = end.getValue();
 				edges.put(line, cost.toString());
 				line.setStrokeWidth(3);
-				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString())));
-				view.getChildren().add(line);
+				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString()), 9, 20, radius));
 			}
 		}
 		return view;
 	}
 
-	public Line[] drawEdge(Circle u, Circle v) {
+	public Line[] drawEdge(Circle u, Circle v, double arrow_angle, double arrow_length, double radius) {
 		double dx, dy, m;
-		double angle = 9;
-		double arrow_length = 20;
 		Line edge, up, down;
-		edge = new Line();
-			edge.setStartX(u.getCenterX() );
-			edge.setStartY(u.getCenterY() );
-			edge.setEndX(v.getCenterX());
-			edge.setEndY(v.getCenterY());
-		dx = edge.getEndX() - edge.getStartX();
-		dy = edge.getEndY() - edge.getStartY();
+		dx = v.getCenterX() - u.getCenterX();
+		dy = v.getCenterY() - u.getCenterY();
 		m = Math.atan2(dy, dx);
+		edge = new Line();
+			edge.setStartX(u.getCenterX() + radius * Math.cos(m));
+			edge.setStartY(u.getCenterY() + radius * Math.sin(m));
+			edge.setEndX(v.getCenterX() - radius * Math.cos(m));
+			edge.setEndY(v.getCenterY() - radius * Math.sin(m));
+			edge.setStrokeWidth(2);
 		up = new Line();
 			up.setStartX(edge.getEndX());
 			up.setStartY(edge.getEndY());
-			up.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(angle)));
-			up.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(angle)));
+			up.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(arrow_angle)));
+			up.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(arrow_angle)));
 			up.setStrokeWidth(3);
 		down = new Line();
 			down.setStartX(edge.getEndX());
 			down.setStartY(edge.getEndY());
-			down.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(-angle)));
-			down.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(-angle)));
+			down.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(-arrow_angle)));
+			down.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(-arrow_angle)));
 			down.setStrokeWidth(3);
 		Line[] res = {edge, up, down};
 		return res;	
