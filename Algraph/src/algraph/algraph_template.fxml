@@ -2,9 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -18,17 +18,17 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="algraph.Controller">
   <children>
-    <SplitPane dividerPositions="0.24387527839643652" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <SplitPane fx:id="split_pane" dividerPositions="0.245" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane>
+        <AnchorPane fx:id="left_pane">
           <children>
             <Label alignment="CENTER" layoutX="31.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Graph Generation" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
               <font>
                 <Font name="System Bold" size="20.0" fx:id="x1" />
               </font>
             </Label>
-                  <Button fx:id="auto_gen" layoutX="51.0" layoutY="103.0" mnemonicParsing="false" text="Automatic Generation" />
-                  <Button fx:id="file_gen" layoutX="67.0" layoutY="152.0" mnemonicParsing="false" text="Import from File">
+                  <Button fx:id="auto_gen" layoutX="12.0" layoutY="51.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="166.0" text="Automatic Generation" />
+                  <Button fx:id="file_gen" layoutX="65.0" layoutY="130.0" mnemonicParsing="false" text="Import from File">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -38,7 +38,6 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Text>
-                  <Slider fx:id="slider_nodes" layoutX="33.0" layoutY="49.0" max="10.0" min="2.0" prefHeight="16.0" prefWidth="201.0" showTickLabels="true" showTickMarks="true" value="2.0" />
                   <Label fx:id="label_gen" layoutX="67.0" layoutY="259.0" prefHeight="16.0" prefWidth="133.0" />
                   <Button fx:id="full_bellman_ford" layoutX="120.0" layoutY="246.0" mnemonicParsing="false" text="Full Bellman Ford" />
                   <Button fx:id="step_bellman_ford" layoutX="20.0" layoutY="246.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Next Step" />
@@ -48,6 +47,7 @@
                       <TableColumn fx:id="cost_column" minWidth="0.0" prefWidth="109.0" text="Cost" />
                     </columns>
                   </TableView>
+                  <ChoiceBox fx:id="choice_box_nodes" layoutX="198.0" layoutY="52.0" prefWidth="60.0" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
@@ -59,7 +59,7 @@
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Pane id="view_pane" fx:id="view_pane" layoutX="19.0" layoutY="50.0" prefHeight="623.0" prefWidth="802.0" />
+                        <Pane id="view_pane" fx:id="view_pane" layoutX="10.0" layoutY="43.0" prefHeight="623.0" prefWidth="802.0" />
               </children>
             </AnchorPane>
           </content>

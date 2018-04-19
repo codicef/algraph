@@ -9,14 +9,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
@@ -30,12 +34,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 public class Controller {
 
 	    @FXML private Pane view_pane;
+	    @FXML private SplitPane split_pane;
+	    @FXML private AnchorPane left_pane;
+
 	    @FXML private Button auto_gen;
 	    @FXML private Button file_gen;
-	    @FXML private Slider slider_nodes;
+	    @FXML private ChoiceBox<Integer> choice_box_nodes;
 	    @FXML private ProgressBar progress_gen;
 	    @FXML private Button full_bellman_ford;
 	    @FXML private Button step_bellman_ford; 
@@ -51,9 +60,12 @@ public class Controller {
 	    @FXML
 	    public void initialize() {
         	random =  new Random((long)1917);
-
-	        node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, String>, ObservableValue<String>>() {
-
+        	split_pane.setDividerPositions(0.245);
+            left_pane.maxWidthProperty().bind(split_pane.widthProperty().multiply(0.24));
+	        choice_box_nodes.setItems(FXCollections.observableList(IntStream.range(2, 15).boxed().collect(Collectors.toList())));
+	        choice_box_nodes.setValue(3);
+            
+            node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, String>, ObservableValue<String>>() {
 	            @Override
 	            public ObservableValue<String> call(TableColumn.CellDataFeatures<Entry<String, Integer>, String> p) {
 	                return new SimpleObjectProperty<String>(p.getValue().getKey());
@@ -62,7 +74,6 @@ public class Controller {
 	        });
 
 	        cost_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, Integer>, ObservableValue<Integer>>() {
-
 	            @Override
 	            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Entry<String, Integer>, Integer> p) {
 	                return new SimpleObjectProperty<Integer>(p.getValue().getValue());
@@ -70,7 +81,7 @@ public class Controller {
 	        });
 
 
-	    	
+	            
 	    	
 	    	
 	    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -79,12 +90,12 @@ public class Controller {
 	            public void handle(MouseEvent t) {
 	            	step = -1;
 	            	graph = new Graph<String>();
-	    			for(int i = 0; i < slider_nodes.getValue(); i++)
+	    			for(int i = 0; i < choice_box_nodes.getValue(); i++)
 	    				graph.insertNode(new Node<String>(String.valueOf(i)));
 	    				
 	    			for(Node<String> start_node : graph.V()) 
 	    				for(Node<String> end_node : graph.V()) 
-		    				if(random.nextInt(100) < 30)
+		    				if(random.nextInt(100) < 25 && !start_node.equals(end_node))
 		    					graph.insertEdge(start_node, end_node, random.nextInt(10) - 2);	
 		    			
 

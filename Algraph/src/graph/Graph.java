@@ -201,7 +201,6 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		}
 		//insert edges
 		for (Entry<Node<T>, HashMap<Node<T>, Integer>> start : this.vertexes.entrySet()) {
-			
 			for(Entry <Node<T>, Integer> end : start.getValue().entrySet()) {
 				Line line;
 				Integer cost;
@@ -209,48 +208,40 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 				cost = end.getValue();
 				edges.put(line, cost.toString());
 				line.setStrokeWidth(3);
-				//view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString())));
+				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString())));
 				view.getChildren().add(line);
 			}
 		}
 		return view;
 	}
-	//serie di prove
 
 	public Line[] drawEdge(Circle u, Circle v) {
-		Line edge = new Line();
+		double dx, dy, m;
+		double angle = 9;
+		double arrow_length = 20;
+		Line edge, up, down;
+		edge = new Line();
 			edge.setStartX(u.getCenterX() );
 			edge.setStartY(u.getCenterY() );
 			edge.setEndX(v.getCenterX());
 			edge.setEndY(v.getCenterY());
-				//"freccetta su"
-		Line up = new Line();
-			up.setStartX(v.getCenterX());
-			up.setStartY(v.getCenterY());
-			up.setEndX(u.getCenterX());
-			up.setEndY(u.getCenterY());
-			//up.setRotate(edge.getRotate() + angle);
-			double angle = GetAngleOfLineBetweenTwoPoints(u.getCenterX(),u.getCenterY(),v.getCenterX(),v.getCenterY());
-			up.getTransforms().add(new Rotate(angle+10,up.getStartX(),up.getStartY()));
-			//up.setRotate(30);
-			up.setStrokeWidth(2);
-		Line down = new Line();
-			down.setStartX(v.getCenterX());
-			down.setStartY(v.getCenterY());
-			down.setEndX(u.getCenterX());
-			down.setEndY(u.getCenterY());
-			down.getTransforms().add(new Rotate(angle ,down.getStartX(),down.getStartY()));
-			//down.set
-			//down.setRotate(edge.getRotate());
-			down.setStrokeWidth(2);
-			Line[] res = {edge, up,down};
+		dx = edge.getEndX() - edge.getStartX();
+		dy = edge.getEndY() - edge.getStartY();
+		m = Math.atan2(dy, dx);
+		up = new Line();
+			up.setStartX(edge.getEndX());
+			up.setStartY(edge.getEndY());
+			up.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(angle)));
+			up.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(angle)));
+			up.setStrokeWidth(3);
+		down = new Line();
+			down.setStartX(edge.getEndX());
+			down.setStartY(edge.getEndY());
+			down.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(-angle)));
+			down.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(-angle)));
+			down.setStrokeWidth(3);
+		Line[] res = {edge, up, down};
 		return res;	
 	}
-	 public static double GetAngleOfLineBetweenTwoPoints(double sx, double sy,double ex, double ey)
-	    {
-	        double xDiff = sx - ex;
-	        double yDiff = sy - ey;
-	        return Math.toDegrees(Math.atan2(yDiff, xDiff));
-	    }
 	
 }
