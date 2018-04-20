@@ -213,8 +213,11 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 				// e se ci son due archi si sovrappongono lol, con calma
 				double mx = (circles.get(start.getKey().toString()).getCenterX() + circles.get(end.getKey().toString()).getCenterX())/2;
 				double my = (circles.get(start.getKey().toString()).getCenterY() + circles.get(end.getKey().toString()).getCenterY())/2;
-				Point2D center = new Point2D(mx,my);
-				Text costText = new Text(mx,my,cost.toString());
+				double m = Math.atan2(circles.get(end.getKey().toString()).getCenterY() - circles.get(start.getKey().toString()).getCenterY() , circles.get(end.getKey().toString()).getCenterX() - circles.get(start.getKey().toString()).getCenterX());
+				Line tl = new Line(mx, my, mx - 10 * Math.cos(m + Math.toRadians(90)) , my - 10 * Math.sin(m + Math.toRadians(90)));
+				Text costText = new Text(tl.getEndX(),tl.getEndY(),cost.toString());
+				costText.setRotate(Math.toDegrees(m));
+				//costText.getTransforms().add(new Rotate(m));
 				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString()), 9, 20, radius));
 				view.getChildren().add(costText);
 			}
