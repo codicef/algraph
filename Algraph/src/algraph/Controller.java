@@ -32,11 +32,15 @@
 	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.HashMap;
-	import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 	import java.util.Map.Entry;
 	import java.util.Random;
 	import java.util.stream.Collectors;
 	import java.util.stream.IntStream;
+	import javafx.scene.shape.Circle;
+
 	public class Controller {
 	
 		    @FXML private Pane view_pane;
@@ -47,6 +51,7 @@
 		    @FXML private Button file_gen;
 		    @FXML private Button save_to_file;
 		    @FXML private ChoiceBox<Integer> choice_box_nodes;
+		    @FXML private ChoiceBox<String> choice_box_startbellman;
 		    @FXML private ProgressBar progress_gen;
 		    @FXML private Button full_bellman_ford;
 		    @FXML private Button step_bellman_ford; 
@@ -84,7 +89,15 @@
 	
 	
 		            
-		    	
+		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    		 
+		            @Override
+		            public void handle(MouseEvent t) {
+		            	cost_table.getItems().removeAll(cost_table.getItems());
+		            	step = -1;
+		            }
+		        });
+		            
 		    	
 		    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		 
@@ -104,6 +117,12 @@
 		    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
 		    			view_pane.getChildren().removeAll(view_pane.getChildren());
 		    			view_pane.getChildren().addAll(tmp.getChildren());
+		    			ArrayList <String>nodes_list = new ArrayList<String>();
+		    			for(Node<String> node_value : graph.V())
+		    				nodes_list.add(node_value.toString());
+				        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
+				        choice_box_startbellman.setValue(nodes_list.get(0).toString());
+
 		            }
 		         });
 		    	
@@ -146,6 +165,11 @@
 		    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
 		    			view_pane.getChildren().removeAll(view_pane.getChildren());
 		    			view_pane.getChildren().addAll(tmp.getChildren());
+		    			ArrayList <String>nodes_list = new ArrayList<String>();
+		    			for(Node<String> node_value : graph.V())
+		    				nodes_list.add(node_value.toString());
+				        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
+				        choice_box_startbellman.setValue(nodes_list.get(0).toString());
 		            }
 		         });
 		    	
@@ -194,7 +218,7 @@
 		    		@Override
 		            public void handle(MouseEvent t) {
 		    			int i = 0;
-		    			HashMap<String, Integer> map = graph.doBellmanFord("0");
+		    			HashMap<String, Integer> map = graph.doBellmanFord(choice_box_startbellman.getValue()).get(graph.doBellmanFord("0").size() - 2);
 		    	        ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
 		    	        cost_table.setItems(items);
 	
@@ -204,8 +228,9 @@
 		    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		@Override
 		            public void handle(MouseEvent t) {
+		    			graph.print();
 		    			HashMap<String, Integer> old_items = new HashMap<String, Integer> ();
-		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFordStep("0");
+		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFord(choice_box_startbellman.getValue().toString());
 		    			if(step < array.size() - 1) {
 		    				step ++;
 		    				if(step > 0)
@@ -216,12 +241,25 @@
 		    			ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
 		    			if(! old_items.entrySet().equals(map.entrySet()) && map.entrySet().size() > 0) {
 		    				cost_table.getItems().removeAll(cost_table.getItems());
-		    				System.out.println("\n" + old_items.entrySet());
-		    				System.out.println(map.entrySet());
 		    				cost_table.setItems(items);
 		    	        }
-		    	        // cost_table.setItems(items);
-	
+		    			
+		    			for(javafx.scene.Node child : view_pane.getChildren()) {
+		    				if (child.getClass() == Circle.class) {
+		    					Circle circle = (Circle) child;
+    							circle.setFill(javafx.scene.paint.Color.RED);
+		    				}
+		    			}
+		    			
+		    			for(javafx.scene.Node child : view_pane.getChildren()) {
+		    				if (child.getClass() == Circle.class) {
+		    					if(step >= 1 && map.get(child.getId()) < array.get(step - 1).get(child.getId())){
+		    						Circle circle = (Circle) child;
+	    							circle.setFill(javafx.scene.paint.Color.BLUE);
+		    					}
+		    				}
+		    			}
+		    			
 		    		}
 		    	});
 		    		

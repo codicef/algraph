@@ -65,6 +65,7 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			this.vertexes.get(u).remove(v);
 	}
 
+
 	
 	@Override
 	public Set<Node<T>> adj(Node<T> u) {
@@ -95,6 +96,9 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		return set;
 	}
 
+	
+	
+	
 	@Override
 	// NOTA: metodo utility per verificare il contenuto delle liste di adiacenza
 	public void print() {
@@ -114,45 +118,26 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		
 	}
 	
-	public HashMap<String, Integer> doBellmanFord(String start){
+		
+	public ArrayList<HashMap<String, Integer>> doBellmanFord(String start){
 		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
+
 		for(Node<T> node : this.V()) {
 			M.add(new HashMap<String, Integer> ());
 			M.get(0).put(node.toString(), Integer.MAX_VALUE - 100);
 		}
 		M.get(0).put(start, 0);
-
+		
 		for(int i = 1; i < this.V().size(); i ++) {
-			if(M.get(i).isEmpty())
-				M.add(new HashMap<String, Integer>());
+			System.out.println(i + "  " + M);
+			for(Node<T> node : this.V()) 
+				M.get(i).put(node.toString(), M.get(i - 1).get(node.toString()));
+			
 			for(Node<T> start_node : this.V()) {
-				M.get(i).put(start_node.toString(), M.get(i - 1).get(start_node.toString()));
-				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node)) {
-					M.get(i).put(start_node.toString(), Math.min(M.get(i).get(start_node.toString()), end_node.getValue() + M.get(i - 1).get(end_node.getKey().toString())));
-				}
+				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node)) 
+					M.get(i).put(end_node.getKey().toString(), Math.min(M.get(i).get(end_node.getKey().toString()), end_node.getValue() + M.get(i).get(start_node.toString())));
 			}
-		}		
-		return M.get(this.V().size() - 1);
-	}
-	
-	public ArrayList<HashMap<String, Integer>> doBellmanFordStep(String start){
-		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
-		for(Node<T> node : this.V()) {
-			M.add(new HashMap<String, Integer> ());
-			M.get(0).put(node.toString(), Integer.MAX_VALUE - 100);
-		}
-		M.get(0).put(start, 0);
-
-		for(int i = 1; i < this.V().size(); i ++) {
-			if(M.get(i).isEmpty())
-				M.add(new HashMap<String, Integer>());
-			for(Node<T> start_node : this.V()) {
-				M.get(i).put(start_node.toString(), M.get(i - 1).get(start_node.toString()));
-				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node)) {
-					M.get(i).put(start_node.toString(), Math.min(M.get(i).get(start_node.toString()), end_node.getValue() + M.get(i - 1).get(end_node.getKey().toString())));
-				}
-			}
-		}		
+		}	
 		return M;
 	}
 	
@@ -203,12 +188,8 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		//insert edges
 		for (Entry<Node<T>, HashMap<Node<T>, Integer>> start : this.vertexes.entrySet()) {
 			for(Entry <Node<T>, Integer> end : start.getValue().entrySet()) {
-				Line line;
 				Integer cost;
-				line = new Line(circles.get(start.getKey().toString()).getCenterX(), circles.get(start.getKey().toString()).getCenterY(), circles.get(end.getKey().toString()).getCenterX(), circles.get(end.getKey().toString()).getCenterY());
 				cost = end.getValue();
-				edges.put(line, cost.toString());
-				line.setStrokeWidth(3);
 				//coordinate non perfette, andrebbe alzato un po' 
 				// e se ci son due archi si sovrappongono lol, con calma
 				double mx = (circles.get(start.getKey().toString()).getCenterX() + circles.get(end.getKey().toString()).getCenterX())/2;

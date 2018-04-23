@@ -22,29 +22,41 @@
       <items>
         <AnchorPane fx:id="left_pane">
           <children>
-            <Label alignment="CENTER" layoutX="31.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Graph Generation" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+            <Label alignment="CENTER" layoutX="42.0" layoutY="4.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Graph Generation" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
               <font>
                 <Font name="System Bold" size="18.0" fx:id="x1" />
               </font>
             </Label>
-                  <Button fx:id="auto_gen" layoutX="12.0" layoutY="51.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="166.0" text="Automatic Generation" />
-                  <Button fx:id="file_gen" layoutX="29.0" layoutY="96.0" mnemonicParsing="false" text="Import from File" />
-                  <Text fill="#9e9e9e" layoutX="64.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Costs computed" textAlignment="CENTER">
+                  <Button fx:id="auto_gen" layoutX="12.0" layoutY="38.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="166.0" text="Automatic Generation" />
+                  <Button fx:id="file_gen" layoutX="21.0" layoutY="83.0" mnemonicParsing="false" text="Import from File" />
+                  <Text fill="#9e9e9e" layoutX="62.0" layoutY="375.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Costs computed" textAlignment="CENTER">
                      <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="15.0" />
                      </font>
                   </Text>
                   <Label fx:id="label_gen" layoutX="67.0" layoutY="259.0" prefHeight="16.0" prefWidth="133.0" />
-                  <Button fx:id="full_bellman_ford" layoutX="120.0" layoutY="246.0" mnemonicParsing="false" text="Full Bellman Ford" />
-                  <Button fx:id="step_bellman_ford" layoutX="20.0" layoutY="246.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Next Step" />
-                  <TableView fx:id="cost_table" layoutX="12.0" layoutY="325.0" prefHeight="348.0" prefWidth="245.0">
+                  <Button fx:id="full_bellman_ford" layoutX="122.0" layoutY="326.0" mnemonicParsing="false" text="Full Bellman Ford" />
+                  <Button fx:id="step_bellman_ford" layoutX="21.0" layoutY="326.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Next Step" />
+                  <TableView fx:id="cost_table" layoutX="12.0" layoutY="379.0" prefHeight="294.0" prefWidth="245.0">
                     <columns>
                       <TableColumn fx:id="node_column" prefWidth="135.0" text="Destination Node" />
                       <TableColumn fx:id="cost_column" minWidth="0.0" prefWidth="109.0" text="Cost" />
                     </columns>
                   </TableView>
-                  <ChoiceBox fx:id="choice_box_nodes" layoutX="198.0" layoutY="52.0" prefWidth="60.0" />
-                  <Button fx:id="save_to_file" layoutX="29.0" layoutY="135.0" mnemonicParsing="false" text="Save to File" />
+                  <ChoiceBox fx:id="choice_box_nodes" layoutX="198.0" layoutY="39.0" prefWidth="60.0" />
+                  <Button fx:id="save_to_file" layoutX="153.0" layoutY="83.0" mnemonicParsing="false" text="Save to File" />
+                  <Label alignment="CENTER" layoutX="21.0" layoutY="265.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Compute Bellman Ford" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+                     <font>
+                        <Font name="System Bold" size="18.0" fx:id="x11" />
+                     </font>
+                  </Label>
+                  <Text fill="#00000099" layoutX="48.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start node" />
+                  <ChoiceBox fx:id="choice_box_startbellman" layoutX="158.0" layoutY="293.0" prefWidth="60.0" />
+                  <Label alignment="CENTER" layoutX="76.0" layoutY="117.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Edit Graph" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+                     <font>
+                        <Font name="System Bold" size="18.0" fx:id="x12" />
+                     </font>
+                  </Label>
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
