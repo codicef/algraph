@@ -46,7 +46,7 @@ import java.util.Map;
 		    @FXML private Pane view_pane;
 		    @FXML private SplitPane split_pane;
 		    @FXML private AnchorPane left_pane;
-	
+		    @FXML private Label status;
 		    @FXML private Button auto_gen;
 		    @FXML private Button file_gen;
 		    @FXML private Button save_to_file;
@@ -112,17 +112,7 @@ import java.util.Map;
 		    				for(Node<String> end_node : graph.V()) 
 			    				if(random.nextInt(100) < 25 && !start_node.equals(end_node))
 			    					graph.insertEdge(start_node, end_node, random.nextInt(10) - 2);	
-			    			
-	
-		    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
-		    			view_pane.getChildren().removeAll(view_pane.getChildren());
-		    			view_pane.getChildren().addAll(tmp.getChildren());
-		    			ArrayList <String>nodes_list = new ArrayList<String>();
-		    			for(Node<String> node_value : graph.V())
-		    				nodes_list.add(node_value.toString());
-				        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
-				        choice_box_startbellman.setValue(nodes_list.get(0).toString());
-
+		    			initializeGraph();
 		            }
 		         });
 		    	
@@ -140,6 +130,13 @@ import java.util.Map;
 							BufferedReader reader = new BufferedReader(new FileReader(selected_file.getAbsolutePath()));
 							String line = reader.readLine();
 							while(line!=null) {
+								System.out.println(line.split("->").length);
+
+								if(!line.contains("->") || line.split("->").length > 2 || line.split("->").length == 0) {
+									System.out.println(line.split("->").length);
+									throw new Exception("Wrong format");
+								
+								}
 								hash.put(line.split("->")[0], new HashMap<String, Integer>());
 								if(line.split("->").length > 1)
 									for (String s : line.split("->")[1].split(";")) {
@@ -156,27 +153,27 @@ import java.util.Map;
 										graph.insertEdge(start_node, end_node, hash.get(start_node.toString()).get(end_node.toString()));
 								}
 							}
+							initializeGraph();
+							status.setText("Okay loading file");
 						}
 		    			 catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							status.setText("Error loading file");
 						}
 		    		
-		    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
-		    			view_pane.getChildren().removeAll(view_pane.getChildren());
-		    			view_pane.getChildren().addAll(tmp.getChildren());
-		    			ArrayList <String>nodes_list = new ArrayList<String>();
-		    			for(Node<String> node_value : graph.V())
-		    				nodes_list.add(node_value.toString());
-				        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
-				        choice_box_startbellman.setValue(nodes_list.get(0).toString());
+		    			
 		            }
 		         });
 		    	
 		    	save_to_file.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		
 		    		@Override
-		            public void handle(MouseEvent t) {  
+		            public void handle(MouseEvent t) { 
+		    			if(graph==null || graph.V().size() < 1) {
+		    				status.setText("Can't save because no nodes");
+		    				return;
+		    			}
+		    			else
+		    				status.setText("Okay");
 		    			String line;
 		            	FileChooser fileChooser = new FileChooser();
 		    			fileChooser.setTitle("Save Graph File");
@@ -217,7 +214,12 @@ import java.util.Map;
 		    	full_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		@Override
 		            public void handle(MouseEvent t) {
-		    			int i = 0;
+		    			if(graph==null || graph.V().size() < 1) {
+		    				status.setText("Can't do bellmanford because no nodes");
+		    				return;
+		    			}
+		    			else
+		    				status.setText("Okay");
 		    			HashMap<String, Integer> map = graph.doBellmanFord(choice_box_startbellman.getValue()).get(graph.doBellmanFord("0").size() - 2);
 		    	        ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
 		    	        cost_table.setItems(items);
@@ -228,7 +230,13 @@ import java.util.Map;
 		    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		@Override
 		            public void handle(MouseEvent t) {
-		    			graph.print();
+		    			if(graph==null || graph.V().size() < 1) {
+		    				status.setText("Can't do bellmanford because no nodes");
+		    				return;
+		    			}
+		    			else
+		    				status.setText("Okay");
+		    			
 		    			HashMap<String, Integer> old_items = new HashMap<String, Integer> ();
 		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFord(choice_box_startbellman.getValue().toString());
 		    			if(step < array.size() - 1) {
@@ -266,6 +274,18 @@ import java.util.Map;
 		    	
 		    }
 		    
-		    
+		    public void initializeGraph() {
+    			view_pane.getChildren().removeAll(view_pane.getChildren());
+    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
+    			view_pane.getChildren().addAll(tmp.getChildren());
+    			ArrayList <String>nodes_list = new ArrayList<String>();
+    			for(Node<String> node_value : graph.V())
+    				nodes_list.add(node_value.toString());
+		        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
+		        choice_box_startbellman.setValue(nodes_list.get(0).toString());
+		        cost_table.getItems().removeAll(cost_table.getItems());
+
+
+		    }
 	}
 	;
