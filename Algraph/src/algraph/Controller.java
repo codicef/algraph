@@ -20,6 +20,7 @@
 	import javafx.scene.control.TableView;
 	import javafx.scene.control.TreeTableView;
 	import javafx.scene.control.cell.PropertyValueFactory;
+	import javafx.scene.control.MenuButton;
 	import javafx.scene.input.MouseEvent;
 	import javafx.scene.layout.AnchorPane;
 	import javafx.scene.layout.Pane;
@@ -58,6 +59,8 @@ import java.util.Map;
 		    @FXML private TableView<Entry<String,Integer>>  cost_table;
 		    @FXML private TableColumn<Entry<String, Integer>, String> node_column;
 		    @FXML private TableColumn<Entry<String, Integer>, Integer> cost_column;
+		    @FXML private MenuButton add_node;
+		    @FXML private Button add_edge;
 	
 		    
 		    protected Integer step;
@@ -97,7 +100,9 @@ import java.util.Map;
 		            	step = -1;
 		            }
 		        });
-		            
+		       
+		        
+		       
 		    	
 		    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		    		 
