@@ -33,13 +33,15 @@
 	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.HashMap;
-	import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.LinkedList;
 	import java.util.List;
 	import java.util.Map;
 	import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Random;
-	import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.stream.Collectors;
 	import java.util.stream.IntStream;
 	import javafx.scene.shape.Circle;
 	import javafx.scene.control.TextField;
@@ -67,8 +69,8 @@ import java.util.Random;
 		    @FXML private Button remove_node;
 		    @FXML private Button add_edge;
 		    @FXML private TextField add_edge_weight;
-		    @FXML private ChoiceBox<String> add_edge_v;
-		    @FXML private ChoiceBox<String> add_edge_u;
+		    @FXML private ChoiceBox<Node<String>> add_edge_v;
+		    @FXML private ChoiceBox<Node<String>> add_edge_u;
 		    @FXML private Button remove_edge;
 		    @FXML private ChoiceBox<String> remove_edge_field;
 		    
@@ -94,6 +96,41 @@ import java.util.Random;
 	
 		        });
 	
+	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(MouseEvent arg0) {
+						int weight = Integer.parseInt(add_edge_weight.getText());
+						graph.insertEdge(add_edge_u.getValue(), add_edge_v.getValue(), weight);
+						initializeGraph();
+						
+						
+						
+					}
+	            	
+	            });
+	            
+	           remove_edge.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	            	
+	            	@Override
+	            	public void handle(MouseEvent arg0) {
+	            		String[] s = remove_edge_field.getValue().split(",");
+	            		String us = s[0].substring(1);
+	            		String vs = s[1].substring(1, 2);
+	            		Node<String> u = null;
+	            		Node<String> v = null;
+	            		for(Node<String> node : graph.V()) {
+	            			if (node.getElement().equals(us))
+	            				u = node;
+	            			if (node.getElement().equals(vs))
+	            				v = node;
+	            		}
+	            		if (u != null && v!= null)
+	            			graph.deleteEdge(u, v);
+	            		initializeGraph();
+	            	}
+	            });
+	            
 	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 					@Override
@@ -108,6 +145,7 @@ import java.util.Random;
 					}
 		        	
 		        });
+	            
 	            
 	            
 	            
@@ -206,6 +244,7 @@ import java.util.Random;
 							}
 							initializeGraph();
 							status.setText("Okay loading file");
+							reader.close();
 						}
 		    			 catch (Exception e) {
 							status.setText("Error loading file");
@@ -336,6 +375,25 @@ import java.util.Random;
 		        choice_box_startbellman.setValue(nodes_list.get(0).toString());
 		        cost_table.getItems().removeAll(cost_table.getItems());
 				remove_node_field.setItems(FXCollections.observableList(nodes_list));
+				LinkedList<Node<String>> l = new LinkedList<Node<String>>();
+				for(Node<String> node : graph.V())
+					l.add(node);
+					
+				add_edge_u.setItems(FXCollections.observableList(l));
+				add_edge_v.setItems(FXCollections.observableList(l));
+				
+				LinkedList<String> edges = new LinkedList<String>();
+
+				for(Node<String> node : graph.V()) {
+					for(Entry<Node<String>,Integer> E : graph.adj_edges(node)) {
+						String edge = "(" + node.toString() + ", " + E.getKey().toString() + ")";
+						edges.add(edge);
+					}
+				}
+				
+				remove_edge_field.setItems(FXCollections.observableList(edges));
+				
+
 
 
 
