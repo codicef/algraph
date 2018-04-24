@@ -33,14 +33,16 @@
 	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+	import java.util.LinkedList;
+	import java.util.List;
+	import java.util.Map;
 	import java.util.Map.Entry;
-	import java.util.Random;
+import java.util.Observable;
+import java.util.Random;
 	import java.util.stream.Collectors;
 	import java.util.stream.IntStream;
 	import javafx.scene.shape.Circle;
+	import javafx.scene.control.TextField;
 
 	public class Controller {
 	
@@ -59,8 +61,17 @@ import java.util.Map;
 		    @FXML private TableView<Entry<String,Integer>>  cost_table;
 		    @FXML private TableColumn<Entry<String, Integer>, String> node_column;
 		    @FXML private TableColumn<Entry<String, Integer>, Integer> cost_column;
-		    @FXML private MenuButton add_node;
+		    @FXML private Button add_node;
+		    @FXML private TextField add_node_field;
+		    @FXML private ChoiceBox<String> remove_node_field;
+		    @FXML private Button remove_node;
 		    @FXML private Button add_edge;
+		    @FXML private TextField add_edge_weight;
+		    @FXML private ChoiceBox<String> add_edge_v;
+		    @FXML private ChoiceBox<String> add_edge_u;
+		    @FXML private Button remove_edge;
+		    @FXML private ChoiceBox<String> remove_edge_field;
+		    
 	
 		    
 		    protected Integer step;
@@ -83,6 +94,41 @@ import java.util.Map;
 	
 		        });
 	
+	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(MouseEvent arg0) {
+						if(add_node_field.getText() == null || add_node_field.getText().length() > 2)
+							status.setText("invalid entry");
+						else
+							{
+							graph.insertNode(new Node<String>(add_node_field.getText()));
+							initializeGraph();
+							}
+					}
+		        	
+		        });
+	            
+	            
+	            
+	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	            	//graph.V().remove(remove_node_field.getValue())
+					@Override
+					public void handle(MouseEvent arg0) {
+						System.out.println(graph.V());
+						for(Node<String> n : graph.V()) {
+							if(n.toString()==remove_node_field.getValue()) {
+								graph.deleteNode(n);
+								break;
+							}
+						}
+						//graph.deleteNode(new Node<String>(remove_node_field.getValue()));
+						System.out.println(graph.V());
+						initializeGraph();
+					}
+	            	
+	            });
+	            
 		        cost_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, Integer>, ObservableValue<Integer>>() {
 		            @Override
 		            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Entry<String, Integer>, Integer> p) {
@@ -178,7 +224,7 @@ import java.util.Map;
 		    				return;
 		    			}
 		    			else
-		    				status.setText("Okay");
+		    				status.setText("Ok");
 		    			String line;
 		            	FileChooser fileChooser = new FileChooser();
 		    			fileChooser.setTitle("Save Graph File");
@@ -289,6 +335,8 @@ import java.util.Map;
 		        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
 		        choice_box_startbellman.setValue(nodes_list.get(0).toString());
 		        cost_table.getItems().removeAll(cost_table.getItems());
+				remove_node_field.setItems(FXCollections.observableList(nodes_list));
+
 
 
 		    }
