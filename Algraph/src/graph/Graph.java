@@ -1,22 +1,16 @@
 package graph;
 
-import javafx.geometry.Point2D;
 import java.util.ArrayList;
-import javafx.scene.transform.Rotate;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+//perchè abbiamo usato un treeset e non un hashset? domanda più probabile del sorgere del sole
+//import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
 
 public class Graph<T extends Comparable<T>> implements IGraph<T> {
 

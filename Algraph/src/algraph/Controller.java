@@ -33,15 +33,11 @@
 	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-	import java.util.List;
-	import java.util.Map;
+	import java.util.HashSet;
+	import java.util.LinkedList;
 	import java.util.Map.Entry;
-import java.util.Observable;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
+	import java.util.Random;
+	import java.util.stream.Collectors;
 	import java.util.stream.IntStream;
 	import javafx.scene.shape.Circle;
 	import javafx.scene.control.TextField;
@@ -100,11 +96,14 @@ import java.util.stream.Collectors;
 
 					@Override
 					public void handle(MouseEvent arg0) {
-						int weight = Integer.parseInt(add_edge_weight.getText());
-						graph.insertEdge(add_edge_u.getValue(), add_edge_v.getValue(), weight);
-						initializeGraph();
-						
-						
+						try {
+							int weight = Integer.parseInt(add_edge_weight.getText());
+							graph.insertEdge(add_edge_u.getValue(), add_edge_v.getValue(), weight);
+							initializeGraph();
+						}
+						catch(Exception e) {
+							status.setText("invalid operation");
+						}
 						
 					}
 	            	
@@ -114,20 +113,25 @@ import java.util.stream.Collectors;
 	            	
 	            	@Override
 	            	public void handle(MouseEvent arg0) {
-	            		String[] s = remove_edge_field.getValue().split(",");
-	            		String us = s[0].substring(1);
-	            		String vs = s[1].substring(1, 2);
-	            		Node<String> u = null;
-	            		Node<String> v = null;
-	            		for(Node<String> node : graph.V()) {
-	            			if (node.getElement().equals(us))
-	            				u = node;
-	            			if (node.getElement().equals(vs))
-	            				v = node;
+	            		try {
+	            			String[] s = remove_edge_field.getValue().split(",");
+	            			String us = s[0].substring(1);
+	            			String vs = s[1].substring(1, 2);
+	            			Node<String> u = null;
+	            			Node<String> v = null;
+	            			for(Node<String> node : graph.V()) {
+	            				if (node.getElement().equals(us))
+	            					u = node;
+	            				if (node.getElement().equals(vs))
+	            					v = node;
+	            				}
+	            			if (u != null && v!= null)
+	            				graph.deleteEdge(u, v);
+	            			initializeGraph();
 	            		}
-	            		if (u != null && v!= null)
-	            			graph.deleteEdge(u, v);
-	            		initializeGraph();
+	            		catch( Exception e) {
+	            			status.setText("invalid operation");
+	            		}
 	            	}
 	            });
 	            
@@ -135,13 +139,18 @@ import java.util.stream.Collectors;
 
 					@Override
 					public void handle(MouseEvent arg0) {
-						if(add_node_field.getText() == null || add_node_field.getText().length() > 2)
-							status.setText("invalid entry");
-						else
-							{
-							graph.insertNode(new Node<String>(add_node_field.getText()));
-							initializeGraph();
+						try {
+							if(add_node_field.getText() == null || add_node_field.getText().length() > 2 )
+								status.setText("invalid entry");
+							else
+								{
+								graph.insertNode(new Node<String>(add_node_field.getText()));
+								initializeGraph();
+								}
 							}
+						catch(Exception e) {
+							status.setText("invalid operation");
+						}
 					}
 		        	
 		        });
@@ -150,19 +159,20 @@ import java.util.stream.Collectors;
 	            
 	            
 	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	            	//graph.V().remove(remove_node_field.getValue())
 					@Override
 					public void handle(MouseEvent arg0) {
-						System.out.println(graph.V());
-						for(Node<String> n : graph.V()) {
-							if(n.toString()==remove_node_field.getValue()) {
-								graph.deleteNode(n);
-								break;
+						try {
+							for(Node<String> n : graph.V()) {
+								if(n.toString()==remove_node_field.getValue()) {
+									graph.deleteNode(n);
+									break;
+								}
 							}
+							initializeGraph();
 						}
-						//graph.deleteNode(new Node<String>(remove_node_field.getValue()));
-						System.out.println(graph.V());
-						initializeGraph();
+						catch(Exception e) {
+							status.setText("invalid operation");
+						}
 					}
 	            	
 	            });
@@ -232,6 +242,8 @@ import java.util.stream.Collectors;
 										hash.get(line.split("->")[0]).put(s.split(",")[0], Integer.decode(s.split(",")[1]));
 									}
 								line = reader.readLine();
+								//per togliere warning
+								reader.close();
 							}
 							for(Entry<String, HashMap<String, Integer>> node : hash.entrySet()) {
 								graph.insertNode(new Node<String>(node.getKey()));
@@ -243,7 +255,7 @@ import java.util.stream.Collectors;
 								}
 							}
 							initializeGraph();
-							status.setText("Okay loading file");
+							status.setText("File correctly loaded");
 							reader.close();
 						}
 		    			 catch (Exception e) {
@@ -292,7 +304,6 @@ import java.util.stream.Collectors;
 							
 						}
 		    			 catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -374,11 +385,11 @@ import java.util.stream.Collectors;
 		        choice_box_startbellman.setItems(FXCollections.observableList(nodes_list));
 		        choice_box_startbellman.setValue(nodes_list.get(0).toString());
 		        cost_table.getItems().removeAll(cost_table.getItems());
-				remove_node_field.setItems(FXCollections.observableList(nodes_list));
+		        remove_node_field.setItems(FXCollections.observableList(nodes_list));
+		        
 				LinkedList<Node<String>> l = new LinkedList<Node<String>>();
 				for(Node<String> node : graph.V())
 					l.add(node);
-					
 				add_edge_u.setItems(FXCollections.observableList(l));
 				add_edge_v.setItems(FXCollections.observableList(l));
 				

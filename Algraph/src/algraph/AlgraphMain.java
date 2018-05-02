@@ -2,11 +2,9 @@ package algraph;
  
 import graph.Graph;
 import graph.Node;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +23,7 @@ public class AlgraphMain extends Application {
     	
     	Parent root;
 		try {
+			@SuppressWarnings("deprecation")
 			URL url = new File("src/algraph/algraph_template.fxml").toURL();
 			root = FXMLLoader.load(url);
 			Scene scene = new Scene(root, 1100, 700);
