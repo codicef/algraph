@@ -158,7 +158,6 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			circle.setId(node.getKey().toString());
 			circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
 			text = new Text(x_coord, y_coord, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
-			//debug System.out.println(x_coord);
 			//offset
 			if(coloumn % 2 == 0)
 				y_coord += (int) radius * 3;
@@ -184,15 +183,21 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			for(Entry <Node<T>, Integer> end : start.getValue().entrySet()) {
 				Integer cost;
 				cost = end.getValue();
-				//coordinate non perfette, andrebbe alzato un po' 
-				// e se ci son due archi si sovrappongono lol, con calma
+				//punti medi
 				double mx = (circles.get(start.getKey().toString()).getCenterX() + circles.get(end.getKey().toString()).getCenterX())/2;
 				double my = (circles.get(start.getKey().toString()).getCenterY() + circles.get(end.getKey().toString()).getCenterY())/2;
+				//angolo dell' arco
 				double m = Math.atan2(circles.get(end.getKey().toString()).getCenterY() - circles.get(start.getKey().toString()).getCenterY() , circles.get(end.getKey().toString()).getCenterX() - circles.get(start.getKey().toString()).getCenterX());
+				System.out.println("angolo m fra archi "+start.getKey().toString() + " e " +end.getKey().toString() + "= "+ m);
+				//segmento perpendicolare all'arco a cui "appendere" il costo
 				Line tl = new Line(mx, my, mx - 10 * Math.cos(m + Math.toRadians(90)) , my - 10 * Math.sin(m + Math.toRadians(90)));
-				Text costText = new Text(tl.getEndX(),tl.getEndY(),cost.toString());
+				Text costText;
+				//controllo che fa sì che i costi degli archi andanti da destra verso sinistra non tocchino l' arco
+				if ( circles.get(start.getKey().toString()).getCenterX() < circles.get(end.getKey().toString()).getCenterX())
+					costText = new Text(tl.getEndX(),tl.getEndY(),cost.toString());
+				else 
+					costText = new Text(tl.getEndX(),tl.getEndY() + 7,cost.toString());
 				costText.setRotate(Math.toDegrees(m));
-				//costText.getTransforms().add(new Rotate(m));
 				view.getChildren().addAll(drawEdge(circles.get(start.getKey().toString()), circles.get(end.getKey().toString()), 9, 20, radius));
 				view.getChildren().add(costText);
 			}
@@ -211,19 +216,19 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 			edge.setStartY(u.getCenterY() + radius * Math.sin(m));
 			edge.setEndX(v.getCenterX() - radius * Math.cos(m));
 			edge.setEndY(v.getCenterY() - radius * Math.sin(m));
-			edge.setStrokeWidth(2);
+			edge.setStrokeWidth(3);
 		up = new Line();
 			up.setStartX(edge.getEndX());
 			up.setStartY(edge.getEndY());
 			up.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(arrow_angle)));
 			up.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(arrow_angle)));
-			up.setStrokeWidth(3);
+			up.setStrokeWidth(2);
 		down = new Line();
 			down.setStartX(edge.getEndX());
 			down.setStartY(edge.getEndY());
 			down.setEndX(edge.getEndX() - arrow_length * Math.cos(m + Math.toRadians(-arrow_angle)));
 			down.setEndY(edge.getEndY() - arrow_length * Math.sin(m + Math.toRadians(-arrow_angle)));
-			down.setStrokeWidth(3);
+			down.setStrokeWidth(2);
 		Line[] res = {edge, up, down};
 		return res;	
 	}
