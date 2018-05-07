@@ -7,16 +7,16 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
-public class Graph<T extends Comparable<T>> implements IGraph<T> {
+public class GraphTries<T extends Comparable<T>> implements IGraph<T> {
 
 	HashMap<Node<T>, HashMap<Node<T>, Integer>> vertexes;
 	
-	public Graph(){
+	public GraphTries(){
 		this.vertexes = new HashMap<Node<T>, HashMap<Node<T>, Integer>>();
 	}
 	
@@ -135,48 +135,80 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 		return M;
 	}
 	
-
+	//ritorno circles per evitare di fare troppi cambiamenti con archi dopo, passo il Pane e n°nodi
+	public HashMap <String,Circle> polygon(Pane p, int nodes){
+		HashMap<String, Circle> circles = new HashMap<String, Circle>();
+		switch(nodes) {
+		case 2:
+			double startX = (p.getWidth()/2) + 300;
+			double startY = (p.getHeight()/2) + 300;
+			double endX = (p.getWidth()/2) + 500;
+			double endY =  (p.getHeight()/2) + 300;
+			boolean flag = false;
+			System.out.println("width = " + p.getWidth() + ", height = " + p.getHeight());
+			for (Entry<Node<T>, HashMap<Node<T>, Integer>> node : this.vertexes.entrySet()) {
+				Circle circle = new Circle();
+				Text text;
+				circle.setFill(javafx.scene.paint.Color.AQUA);
+				if (flag == true) {
+					circle.setCenterX(startX);
+					circle.setCenterY(startY);
+					}
+				else {
+					circle.setCenterX(endX);
+					circle.setCenterY(endY);
+				}
+				circle.setRadius(20);
+				circle.setId(node.getKey().toString());
+				circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
+				if(flag == true)
+					text = new Text(startX, startY, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
+				else
+					text = new Text(endX, endY, node.getKey().toString());
+				//offset
+				p.getChildren().add(circle);
+				p.getChildren().add(text);
+				flag = true;
+			}
+			break;
+		case 3:
+			Circle[] tria = new Circle[3];
+			for(int i = 0; i < 3; i++) {
+				tria[i] = new Circle();
+				tria[i].setFill(javafx.scene.paint.Color.AQUA);
+				tria[i].setRadius(20);
+				}
+			for (Entry<Node<T>, HashMap<Node<T>, Integer>> node : this.vertexes.entrySet()) {
+					int j = 0;
+					tria[j].setId(node.getKey().toString());
+					j++;
+					circles.put(node.getKey().toString(), tria[j]);
+				}
+			tria[0].setCenterX(p.getWidth() + 400);
+			tria[0].setCenterY(p.getHeight() + 100);
+			tria[1].setCenterX(p.getWidth() + 150);
+			tria[1].setCenterY(p.getHeight() + 550);
+			tria[2].setCenterX(p.getWidth() + 650);
+			tria[2].setCenterY(p.getHeight() + 550);
+			Text t0,t1,t2;
+			t0 = new Text(p.getWidth() + 400, p.getHeight() + 100, tria[0].getId());
+			t1 = new Text(p.getWidth() + 150, p.getHeight() + 550, tria[1].getId());
+			t2 = new Text(p.getWidth() + 650, p.getHeight() + 550, tria[2].getId());
+			p.getChildren().addAll(tria);
+			p.getChildren().addAll(t0,t1,t2);
+			break;
+		}
+		
+		return circles;
+	}
+	
 	public Pane getFxGraph(int size_x, int size_y, int offset, double radius) {
 		Pane view = new Pane();
 		HashMap<String, Circle> circles = new HashMap<String, Circle>();
 		
 		// Compute coordinates
 		int n_nodes = this.vertexes.size();
-		float x_nodes = (float) n_nodes / 3;
-
-		double x_coord = offset;
-		double y_coord = offset + 20;
-		int raw = 0, coloumn = 0;
-		for (Entry<Node<T>, HashMap<Node<T>, Integer>> node : this.vertexes.entrySet()) {
-			Circle circle = new Circle();
-			Text text;
-			circle.setFill(javafx.scene.paint.Color.RED);
-			circle.setCenterX(x_coord);
-			circle.setCenterY(y_coord);
-			circle.setRadius(radius);
-			circle.setId(node.getKey().toString());
-			circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
-			text = new Text(x_coord, y_coord, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
-			//offset
-			if(coloumn % 2 == 0)
-				y_coord += (int) radius * 3;
-			else
-				y_coord -= (int) radius * 3;
-			
-			x_coord += (size_x - offset * 2) / x_nodes;
-			if(x_coord >= size_x) {
-				y_coord += (size_y - offset * 2) / 3;
-				x_coord = offset ;
-				raw ++;
-				if(raw % 2 != 0)
-					x_coord += (int) radius * 3;
-				
-			}
-			else
-				coloumn ++;
-			view.getChildren().add(circle);
-			view.getChildren().add(text);
-		}
+		circles = polygon(view,n_nodes);
 		//insert edges
 		for (Entry<Node<T>, HashMap<Node<T>, Integer>> start : this.vertexes.entrySet()) {
 			for(Entry <Node<T>, Integer> end : start.getValue().entrySet()) {
