@@ -1,13 +1,12 @@
 package graph;
 
-public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
-	
+public class Node<T extends Comparable<T>> implements Comparable<Node<T>> { // classe che implementa nodo di un grafo
 	private T element;
-	
+
 	public Node(T e){
 		this.element = e;
 	}
-	
+
 	public T getElement(){
 		return this.element;
 	}
@@ -20,5 +19,5 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
 	public int compareTo(Node<T> o) {
 		return this.element.compareTo(o.element);
 	}
-	
+
 }

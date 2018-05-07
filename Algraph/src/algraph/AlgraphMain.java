@@ -1,7 +1,6 @@
 package algraph;
  
-import graph.Graph;
-import graph.Node;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -9,7 +8,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
  
 public class AlgraphMain extends Application {

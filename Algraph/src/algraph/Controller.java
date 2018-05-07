@@ -6,21 +6,15 @@
 	import javafx.beans.value.ObservableValue;
 	import javafx.collections.FXCollections;
 	import javafx.collections.ObservableList;
-	import javafx.event.ActionEvent;
 	import javafx.event.EventHandler;
 	import javafx.fxml.FXML;
 	import javafx.scene.control.Button;
 	import javafx.scene.control.ChoiceBox;
 	import javafx.scene.control.Label;
 	import javafx.scene.control.ProgressBar;
-	import javafx.scene.control.Slider;
 	import javafx.scene.control.SplitPane;
 	import javafx.scene.control.TableColumn;
-	import javafx.scene.control.TableColumn.CellDataFeatures;
 	import javafx.scene.control.TableView;
-	import javafx.scene.control.TreeTableView;
-	import javafx.scene.control.cell.PropertyValueFactory;
-	import javafx.scene.control.MenuButton;
 	import javafx.scene.input.MouseEvent;
 	import javafx.scene.layout.AnchorPane;
 	import javafx.scene.layout.Pane;
@@ -28,12 +22,10 @@
 	import javafx.util.Callback;
 	import java.io.BufferedReader;
 	import java.io.File;
-	import java.io.FileNotFoundException;
 	import java.io.FileReader;
 	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.HashMap;
-	import java.util.HashSet;
 	import java.util.LinkedList;
 	import java.util.Map.Entry;
 	import java.util.Random;
@@ -43,15 +35,19 @@
 	import javafx.scene.control.TextField;
 
 	public class Controller {
-	
+	    
+	        // Riferimenti per gestione di elementi FXML
+			// Pannelli
 		    @FXML private Pane view_pane;
 		    @FXML private SplitPane split_pane;
 		    @FXML private AnchorPane left_pane;
+		    // Gestione grafo e salvataggio
 		    @FXML private Label status;
 		    @FXML private Button auto_gen;
 		    @FXML private Button file_gen;
 		    @FXML private Button save_to_file;
 		    @FXML private ChoiceBox<Integer> choice_box_nodes;
+		    // Bellmanford 
 		    @FXML private ChoiceBox<String> choice_box_startbellman;
 		    @FXML private ProgressBar progress_gen;
 		    @FXML private Button full_bellman_ford;
@@ -59,6 +55,7 @@
 		    @FXML private TableView<Entry<String,Integer>>  cost_table;
 		    @FXML private TableColumn<Entry<String, Integer>, String> node_column;
 		    @FXML private TableColumn<Entry<String, Integer>, Integer> cost_column;
+		    // Modifica grafo		    
 		    @FXML private Button add_node;
 		    @FXML private TextField add_node_field;
 		    @FXML private ChoiceBox<String> remove_node_field;
@@ -69,15 +66,16 @@
 		    @FXML private ChoiceBox<Node<String>> add_edge_u;
 		    @FXML private Button remove_edge;
 		    @FXML private ChoiceBox<String> remove_edge_field;
-		    
-	
-		    
-		    protected Integer step;
-		    protected Graph<String> graph;
+
+
+		    protected Integer step; // utilizzato per step di bellman ford
+		    protected Graph<String> graph; // salva un istanza del grafo visualizzato
+		    protected GraphUtils utils; // utils per gen graph
 		    Random random;
 		    
 		    @FXML
 		    public void initialize() {
+		    	utils = new GraphUtils();
 	        	random =  new Random((long)1917);
 	        	split_pane.setDividerPositions(0.245);
 	            left_pane.maxWidthProperty().bind(split_pane.widthProperty().multiply(0.24));
@@ -92,8 +90,7 @@
 	
 		        });
 	
-	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione dell'aggiunta di un arco
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
@@ -104,12 +101,11 @@
 						catch(Exception e) {
 							status.setText("invalid operation");
 						}
-						
 					}
 	            	
 	            });
 	            
-	           remove_edge.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	           remove_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione della rimozione di un arco
 	            	
 	            	@Override
 	            	public void handle(MouseEvent arg0) {
@@ -135,12 +131,12 @@
 	            	}
 	            });
 	            
-	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // aggiunta nodo
 
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
-							if(add_node_field.getText() == null || add_node_field.getText().length() > 2 )
+							if(add_node_field.getText() == null || add_node_field.getText().length() > 1 )
 								status.setText("invalid entry");
 							else
 								{
@@ -158,7 +154,7 @@
 	            
 	            
 	            
-	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // remove node
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
@@ -186,7 +182,7 @@
 	
 	
 		            
-		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() { // se uno agisce su tendina per inizio bellman riparte da zero
 		    		 
 		            @Override
 		            public void handle(MouseEvent t) {
@@ -198,7 +194,7 @@
 		        
 		       
 		    	
-		    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    	auto_gen.setOnMouseClicked(new EventHandler<MouseEvent>() { // generazione automatica del grafo
 		    		 
 		            @Override
 		            public void handle(MouseEvent t) {
@@ -215,7 +211,7 @@
 		            }
 		         });
 		    	
-		    	file_gen.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    	file_gen.setOnMouseClicked(new EventHandler<MouseEvent>() { // generazione del grafo a partire dal file
 		    		
 		    		@Override
 		            public void handle(MouseEvent t) {  
@@ -225,7 +221,7 @@
 		            	FileChooser fileChooser = new FileChooser();
 		    			fileChooser.setTitle("Open Resource File");
 		    			File selected_file = fileChooser.showOpenDialog(view_pane.getScene().getWindow());	
-		    			try {
+		    			try { // costruzione riga per riga, se non va a buon fine msg di errore
 							BufferedReader reader = new BufferedReader(new FileReader(selected_file.getAbsolutePath()));
 							String line = reader.readLine();
 							while(line!=null) {
@@ -242,7 +238,6 @@
 										hash.get(line.split("->")[0]).put(s.split(",")[0], Integer.decode(s.split(",")[1]));
 									}
 								line = reader.readLine();
-								//per togliere warning
 								reader.close();
 							}
 							for(Entry<String, HashMap<String, Integer>> node : hash.entrySet()) {
@@ -254,8 +249,13 @@
 										graph.insertEdge(start_node, end_node, hash.get(start_node.toString()).get(end_node.toString()));
 								}
 							}
-							initializeGraph();
-							status.setText("File correctly loaded");
+							
+							if(graph.V().size() > 10)
+								throw new Exception("Wrong format");
+							else {
+								initializeGraph();
+								status.setText("File correctly loaded");
+							}
 							reader.close();
 						}
 		    			 catch (Exception e) {
@@ -266,7 +266,7 @@
 		            }
 		         });
 		    	
-		    	save_to_file.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    	save_to_file.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione salvataggio del grafo su file
 		    		
 		    		@Override
 		            public void handle(MouseEvent t) { 
@@ -328,7 +328,7 @@
 		    		}
 		    	});
 		    	
-		    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() { // azione su bellman ford passo per passo, e' utilizzato step come ausilio
 		    		@Override
 		            public void handle(MouseEvent t) {
 		    			if(graph==null || graph.V().size() < 1) {
@@ -375,9 +375,9 @@
 		    	
 		    }
 		    
-		    public void initializeGraph() {
+		    public void initializeGraph() { // utilizzato per inizializzare/reinizializzare il grafo e tutte le componenti/funzioni connesse
     			view_pane.getChildren().removeAll(view_pane.getChildren());
-    			Pane tmp = graph.getFxGraph((int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
+    			Pane tmp = utils.getFxGraph(graph, (int) view_pane.getWidth(), (int) view_pane.getHeight(), 20, 20);
     			view_pane.getChildren().addAll(tmp.getChildren());
     			ArrayList <String>nodes_list = new ArrayList<String>();
     			for(Node<String> node_value : graph.V())
