@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -16,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="algraph.Controller">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="algraph.Controller">
   <children>
     <SplitPane fx:id="split_pane" dividerPositions="0.245" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
@@ -27,8 +29,8 @@
                 <Font name="System Bold" size="18.0" fx:id="x1" />
               </font>
             </Label>
-                  <Button fx:id="auto_gen" layoutX="12.0" layoutY="38.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="166.0" text="Automatic Generation" />
-                  <Button fx:id="file_gen" layoutX="21.0" layoutY="83.0" mnemonicParsing="false" text="Import from File" />
+                  <Button fx:id="auto_gen" layoutX="12.0" layoutY="31.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="166.0" text="Automatic Generation" />
+                  <Button fx:id="file_gen" layoutX="21.0" layoutY="70.0" mnemonicParsing="false" text="Import from File" />
                   <Text fill="#9e9e9e" layoutX="63.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Costs computed" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="15.0" />
@@ -43,9 +45,9 @@
                       <TableColumn fx:id="cost_column" minWidth="0.0" prefWidth="109.0" text="Cost" />
                     </columns>
                   </TableView>
-                  <ChoiceBox fx:id="choice_box_nodes" layoutX="198.0" layoutY="39.0" prefWidth="60.0" />
-                  <Button fx:id="save_to_file" layoutX="153.0" layoutY="83.0" mnemonicParsing="false" text="Save to File" />
-                  <Label alignment="CENTER" layoutX="20.0" layoutY="282.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Compute Bellman Ford" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
+                  <ChoiceBox fx:id="choice_box_nodes" layoutX="193.0" layoutY="32.0" prefWidth="60.0" />
+                  <Button fx:id="save_to_file" layoutX="152.0" layoutY="70.0" mnemonicParsing="false" text="Save to File" />
+                  <Label alignment="CENTER" layoutX="19.0" layoutY="294.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Compute Bellman Ford" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
                      <font>
                         <Font name="System Bold" size="18.0" fx:id="x11" />
                      </font>
@@ -57,16 +59,56 @@
                         <Font name="System Bold" size="18.0" fx:id="x12" />
                      </font>
                   </Label>
-                  <ChoiceBox fx:id="add_edge_u" layoutX="12.0" layoutY="143.0" prefHeight="26.0" prefWidth="40.0" />
-                  <ChoiceBox fx:id="add_edge_v" layoutX="63.0" layoutY="143.0" prefHeight="26.0" prefWidth="40.0" />
-                  <Button fx:id="add_edge" layoutX="169.0" layoutY="143.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="77.0" text="Add edge" />
-                  <Button fx:id="remove_edge" layoutX="150.0" layoutY="175.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="95.0" text="Remove edge" />
-                  <ChoiceBox fx:id="remove_edge_field" layoutX="12.0" layoutY="175.0" prefHeight="21.0" prefWidth="117.0" />
-                  <ChoiceBox fx:id="remove_node_field" layoutX="15.0" layoutY="255.0" prefHeight="16.0" prefWidth="120.0" />
-                  <Button fx:id="remove_node" layoutX="152.0" layoutY="256.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Remove node" />
-                  <Button fx:id="add_node" layoutX="152.0" layoutY="222.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="95.0" text="Add node" />
-                  <TextField fx:id="add_node_field" layoutX="10.0" layoutY="223.0" prefHeight="23.0" prefWidth="126.0" text=" Insert node's key" />
-                  <TextField fx:id="add_edge_weight" layoutX="117.0" layoutY="143.0" prefHeight="20.0" prefWidth="40.0" text="Weight" />
+                  <TabPane layoutX="6.0" layoutY="129.0" prefHeight="168.0" prefWidth="245.0">
+                    <tabs>
+                      <Tab closable="false" text="Nodes">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="235.0">
+                                 <children>
+                                    <TextField fx:id="add_node_field" layoutX="14.0" layoutY="28.0" prefHeight="26.0" prefWidth="95.0" text=" Insert node's key" />
+                                    <Button fx:id="add_node" layoutX="131.0" layoutY="28.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="95.0" text="Add node" />
+                                    <ChoiceBox fx:id="remove_node_field" layoutX="14.0" layoutY="97.0" prefHeight="26.0" prefWidth="92.0" />
+                                    <Button fx:id="remove_node" layoutX="133.0" layoutY="97.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Remove" />
+                                    <Label layoutX="79.0" layoutY="5.0" text="Insert Node">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="70.0" layoutY="68.0" text="Remove Node">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab closable="false" text="Edges">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ChoiceBox fx:id="add_edge_u" layoutX="14.0" layoutY="26.0" prefHeight="26.0" prefWidth="40.0" />
+                                    <ChoiceBox fx:id="add_edge_v" layoutX="68.0" layoutY="26.0" prefHeight="26.0" prefWidth="40.0" />
+                                    <TextField fx:id="add_edge_weight" layoutX="123.0" layoutY="26.0" prefHeight="20.0" prefWidth="40.0" text="Weight" />
+                                    <Button fx:id="add_edge" layoutX="176.0" layoutY="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Add" />
+                                    <ChoiceBox fx:id="remove_edge_field" layoutX="13.0" layoutY="94.0" prefHeight="21.0" prefWidth="117.0" />
+                                    <Button fx:id="remove_edge" layoutX="143.0" layoutY="94.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="94.0" text="Remove" />
+                                    <Label layoutX="71.0" layoutY="68.0" text="Remove Edge">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="88.0" layoutY="5.0" text="Add Edge">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
