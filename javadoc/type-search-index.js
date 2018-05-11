@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"algraph","l":"AlgraphMain"},{"p":"algraph","l":"Controller"},{"p":"graph","l":"Graph"},{"p":"graph","l":"GraphTries"},{"p":"algraph","l":"GraphUtils"},{"p":"graph","l":"IGraph"},{"p":"graph","l":"Node"},{"p":"graph","l":"TestGraphs"}]
