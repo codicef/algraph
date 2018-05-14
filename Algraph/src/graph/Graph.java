@@ -111,21 +111,26 @@ public class Graph<T extends Comparable<T>> implements IGraph<T> {
 
 	public ArrayList<HashMap<String, Integer>> doBellmanFord(String start){
 		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
-
+		int j = 0;
+		M.add(new HashMap<String, Integer> ());
 		for(Node<T> node : this.V()) {
-			M.add(new HashMap<String, Integer> ());
-			M.get(0).put(node.toString(), Integer.MAX_VALUE - 100);
+			M.get(j).put(node.toString(), Integer.MAX_VALUE - 100);
 		}
-		M.get(0).put(start, 0);
+		M.get(j).put(start, 0);
 
 		for(int i = 1; i < this.V().size(); i ++) {
-			System.out.println(i + "  " + M);
-			for(Node<T> node : this.V())
-				M.get(i).put(node.toString(), M.get(i - 1).get(node.toString()));
-
 			for(Node<T> start_node : this.V()) {
-				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node))
-					M.get(i).put(end_node.getKey().toString(), Math.min(M.get(i).get(end_node.getKey().toString()), end_node.getValue() + M.get(i).get(start_node.toString())));
+				j ++;
+				M.add(new HashMap<String, Integer> ());
+				for(Node<T> node : this.V())
+					M.get(j).put(node.toString(), M.get(j - 1).get(node.toString()));
+
+				for(Entry<Node<T>, Integer> end_node : this.adj_edges(start_node)) {
+					M.get(j).put(end_node.getKey().toString(), M.get(j - 1).get(end_node.getKey().toString()));
+					M.get(j).put(end_node.getKey().toString(), Math.min(M.get(j).get(end_node.getKey().toString()), end_node.getValue() + M.get(j).get(start_node.toString())));	
+			
+				}
+				
 			}
 		}
 		return M;

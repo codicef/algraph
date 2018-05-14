@@ -79,7 +79,7 @@
 	        	random =  new Random((long)1917);
 	        	split_pane.setDividerPositions(0.245);
 	            left_pane.maxWidthProperty().bind(split_pane.widthProperty().multiply(0.24));
-		        choice_box_nodes.setItems(FXCollections.observableList(IntStream.range(2, 15).boxed().collect(Collectors.toList())));
+		        choice_box_nodes.setItems(FXCollections.observableList(IntStream.range(3, 9).boxed().collect(Collectors.toList())));
 		        choice_box_nodes.setValue(3);
 	            
 	            node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, String>, ObservableValue<String>>() {
@@ -339,7 +339,7 @@
 		    				status.setText("Okay");
 		    			
 		    			HashMap<String, Integer> old_items = new HashMap<String, Integer> ();
-		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFord(choice_box_startbellman.getValue().toString());
+		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFord(choice_box_startbellman.getValue().toString()); // array con mappa che associa nodo destinazione costo
 		    			if(step < array.size() - 1) {
 		    				step ++;
 		    				if(step > 0)
