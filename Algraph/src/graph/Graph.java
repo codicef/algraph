@@ -140,12 +140,14 @@ public class Graph implements IGraph<String> {
 		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
 		
 		int j = 0;
+		//inizializzazione
 		M.add(new HashMap<String, Integer> ());
 		for(Node<String> node : this.V()) {
 			M.get(j).put(node.toString(), Integer.MAX_VALUE - 100); // val = infinito
 		}
 		M.get(j).put(start, 0);
-
+		
+		//rilassamento archi
 		for(int i = 1; i < this.V().size(); i ++) {
 			for(Node<String> start_node : this.V()) {
 				j ++;
