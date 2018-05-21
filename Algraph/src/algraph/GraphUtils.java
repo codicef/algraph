@@ -2,7 +2,6 @@ package algraph;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-
 import graph.Node;
 import graph.Graph;
 import javafx.scene.layout.Pane;
@@ -15,6 +14,7 @@ public final class GraphUtils {
     public Pane getFxGraph(Graph graph, int size_x, int size_y, int offset, double radius) { // ritorna oggetto pane con oggetti dentro per costruzione grafo
 		Pane view = new Pane();
 		HashMap<Node<String>, HashMap<Node<String>, Integer>> map = graph.getVertexes();
+		//HashMap di oggetti "Circle" da inserire all' interno del pane
 		HashMap<String, Circle> circles = new HashMap<String, Circle>();
 
 		// Compute coordinates
@@ -32,8 +32,8 @@ public final class GraphUtils {
 			circle.setCenterY(y_coord);
 			circle.setRadius(radius);
 			circle.setId(node.getKey().toString());
-			circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
-			text = new Text(x_coord, y_coord, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
+			circles.put(node.getKey().toString(), circle);
+			text = new Text(x_coord, y_coord, node.getKey().toString());//crea oggetto text passando coordinate e nome nodo
 			//offset vari
 			if(coloumn % 2 == 0)
 				y_coord += (int) radius * 3;
@@ -67,7 +67,7 @@ public final class GraphUtils {
 				//segmento perpendicolare all'arco a cui "appendere" il costo
 				Line tl = new Line(mx, my, mx - 10 * Math.cos(m + Math.toRadians(90)) , my - 10 * Math.sin(m + Math.toRadians(90)));
 				Text costText;
-				//controllo che fa s� che i costi degli archi andanti da destra verso sinistra non tocchino l' arco
+				//controllo che fa si che i costi degli archi andanti da destra verso sinistra non tocchino l' arco
 				if ( circles.get(start.getKey().toString()).getCenterX() < circles.get(end.getKey().toString()).getCenterX())
 					costText = new Text(tl.getEndX(),tl.getEndY(),cost.toString());
 				else 
@@ -80,7 +80,7 @@ public final class GraphUtils {
 		return view;
 	}
 
-    public Line[] drawEdge(Circle u, Circle v, double arrow_angle, double arrow_length, double radius) { // returna le lines per la costruzione di un arco
+    public Line[] drawEdge(Circle u, Circle v, double arrow_angle, double arrow_length, double radius) { // restituisce le lines per la costruzione di un arco
 		double dx, dy, m;
 		Line edge, up, down;
 		dx = v.getCenterX() - u.getCenterX();

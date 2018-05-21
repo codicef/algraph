@@ -74,7 +74,7 @@
 		    Random random;
 		    
 		    @FXML
-		    public void initialize() { // initializza parti grafiche
+		    public void initialize() { // inizializza parti grafiche
 		    	utils = new GraphUtils();
 	        	random =  new Random((long)1917);
 	        	split_pane.setDividerPositions(0.245);
@@ -99,7 +99,7 @@
 	
 	
 		            
-		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() { // se uno agisce su tendina per inizio bellman riparte da zero
+		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() { // fa si che cliccando su tendina la computazione di bellman riparta da zero
 		    		 
 		            @Override
 		            public void handle(MouseEvent t) {
@@ -108,7 +108,7 @@
 		            }
 		        });
 	
-	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione dell'aggiunta di un arco
+	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione dell'aggiunta di un arco da parte dell'utente
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
@@ -127,7 +127,7 @@
 	            	
 	            });
 	            
-	           remove_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione della rimozione di un arco
+	           remove_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione della rimozione di un arco da parte dell'utente
 	            	
 	            	@Override
 	            	public void handle(MouseEvent arg0) {
@@ -148,15 +148,15 @@
 	            			else
 	            				throw new Exception("Wrong format");
 	            			initializeGraph();
-	            			status.setText("Okay");
+	            			status.setText("Ok");
 	            		}
 	            		catch( Exception e) {
-	            			status.setText("invalid operation");
+	            			status.setText("Invalid operation");
 	            		}
 	            	}
 	            });
 	            
-	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // aggiunta nodo
+	            add_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // aggiunta nodo da parte dell'utente
 
 					@Override
 					public void handle(MouseEvent arg0) {
@@ -180,7 +180,7 @@
 	            
 	            
 	            
-	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // remove node
+	            remove_node.setOnMouseClicked(new EventHandler<MouseEvent>() { // rimozione nodo da parte dell' utente
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
@@ -232,6 +232,7 @@
 		    			fileChooser.setTitle("Open Resource File");
 		    			File selected_file = fileChooser.showOpenDialog(view_pane.getScene().getWindow());	
 		    			try { // costruzione riga per riga, se non va a buon fine msg di errore
+							@SuppressWarnings("resource")
 							BufferedReader reader = new BufferedReader(new FileReader(selected_file.getAbsolutePath()));
 							String line = reader.readLine();
 							while(line!=null) {
@@ -313,7 +314,7 @@
 							
 						}
 		    			 catch (Exception e) {
-		    				status.setText("Error saving");
+		    				status.setText("Error");
 							e.printStackTrace();
 						}
 
