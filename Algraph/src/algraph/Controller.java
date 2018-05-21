@@ -373,8 +373,9 @@
 		    					array.add(new HashMap<String, String>());
 		    					for(Entry<String, Integer> entry : bellman_array.get(i).entrySet()) {
 		    						String tmp;
-		    						if (entry.getValue() < Integer.MAX_VALUE / 2)
+		    						if (entry.getValue() < Integer.MAX_VALUE / 2) 
 		    							tmp = entry.getValue().toString();
+		    						
 		    						else
 		    							tmp = "Infinity"; // se valore entry nel range dell'infinito scrivo infinity nel campo
 		    						array.get(i).put(entry.getKey(), tmp);
