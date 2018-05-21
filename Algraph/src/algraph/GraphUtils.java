@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 
 
 public final class GraphUtils {
-    public Pane getFxGraph(Graph<String> graph, int size_x, int size_y, int offset, double radius) { // ritorna oggetto pane con oggetti dentro
+    public Pane getFxGraph(Graph graph, int size_x, int size_y, int offset, double radius) { // ritorna oggetto pane con oggetti dentro per costruzione grafo
 		Pane view = new Pane();
 		HashMap<Node<String>, HashMap<Node<String>, Integer>> map = graph.getVertexes();
 		HashMap<String, Circle> circles = new HashMap<String, Circle>();
@@ -34,7 +34,7 @@ public final class GraphUtils {
 			circle.setId(node.getKey().toString());
 			circles.put(node.getKey().toString(), circle);//associ nome nodo a oggetto FX
 			text = new Text(x_coord, y_coord, node.getKey().toString());//crei oggetto text passando coordinante e nome nodo
-			//offset
+			//offset vari
 			if(coloumn % 2 == 0)
 				y_coord += (int) radius * 3;
 			else
@@ -80,18 +80,19 @@ public final class GraphUtils {
 		return view;
 	}
 
-    public Line[] drawEdge(Circle u, Circle v, double arrow_angle, double arrow_length, double radius) { // return lines(for an edge) in one array
+    public Line[] drawEdge(Circle u, Circle v, double arrow_angle, double arrow_length, double radius) { // returna le lines per la costruzione di un arco
 		double dx, dy, m;
 		Line edge, up, down;
 		dx = v.getCenterX() - u.getCenterX();
 		dy = v.getCenterY() - u.getCenterY();
 		m = Math.atan2(dy, dx);
-		edge = new Line();
+		edge = new Line(); // line principale
 			edge.setStartX(u.getCenterX() + radius * Math.cos(m));
 			edge.setStartY(u.getCenterY() + radius * Math.sin(m));
 			edge.setEndX(v.getCenterX() - radius * Math.cos(m));
 			edge.setEndY(v.getCenterY() - radius * Math.sin(m));
 			edge.setStrokeWidth(3);
+		// sotto costruisco le lines per la costruzione della forma a freccia
 		up = new Line();
 			up.setStartX(edge.getEndX());
 			up.setStartY(edge.getEndY());

@@ -52,9 +52,9 @@
 		    @FXML private ProgressBar progress_gen;
 		    @FXML private Button full_bellman_ford;
 		    @FXML private Button step_bellman_ford; 
-		    @FXML private TableView<Entry<String,Integer>>  cost_table;
-		    @FXML private TableColumn<Entry<String, Integer>, String> node_column;
-		    @FXML private TableColumn<Entry<String, Integer>, Integer> cost_column;
+		    @FXML private TableView<Entry<String,String>>  cost_table;
+		    @FXML private TableColumn<Entry<String, String>, String> node_column;
+		    @FXML private TableColumn<Entry<String, String>, String> cost_column;
 		    // Modifica grafo		    
 		    @FXML private Button add_node;
 		    @FXML private TextField add_node_field;
@@ -69,12 +69,12 @@
 
 
 		    protected Integer step; // utilizzato per step di bellman ford
-		    protected Graph<String> graph; // salva un istanza del grafo visualizzato
+		    protected Graph graph; // salva un istanza del grafo visualizzato
 		    protected GraphUtils utils; // utils per gen graph
 		    Random random;
 		    
 		    @FXML
-		    public void initialize() {
+		    public void initialize() { // initializza parti grafiche
 		    	utils = new GraphUtils();
 	        	random =  new Random((long)1917);
 	        	split_pane.setDividerPositions(0.245);
@@ -82,21 +82,43 @@
 		        choice_box_nodes.setItems(FXCollections.observableList(IntStream.range(3, 9).boxed().collect(Collectors.toList())));
 		        choice_box_nodes.setValue(3);
 	            
-	            node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, String>, ObservableValue<String>>() {
+	            node_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, String>, String>, ObservableValue<String>>() { // inizializzazione colonna per nodi bellman
 		            @Override
-		            public ObservableValue<String> call(TableColumn.CellDataFeatures<Entry<String, Integer>, String> p) {
+		            public ObservableValue<String> call(TableColumn.CellDataFeatures<Entry<String, String>, String> p) {
 		                return new SimpleObjectProperty<String>(p.getValue().getKey());
 		            }
 	
+		        });
+	            
+	            cost_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, String>, String>, ObservableValue<String>>() {// inizializzazione colonna per costi bellman
+		            @Override
+		            public ObservableValue<String> call(TableColumn.CellDataFeatures<Entry<String, String>, String> p) {
+		                return new SimpleObjectProperty<String>(p.getValue().getValue());
+		            }
+		        });
+	
+	
+		            
+		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() { // se uno agisce su tendina per inizio bellman riparte da zero
+		    		 
+		            @Override
+		            public void handle(MouseEvent t) {
+		            	cost_table.getItems().removeAll(cost_table.getItems());
+		            	step = -1;
+		            }
 		        });
 	
 	            add_edge.setOnMouseClicked(new EventHandler<MouseEvent>() { // gestione dell'aggiunta di un arco
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
-							int weight = Integer.parseInt(add_edge_weight.getText());
-							graph.insertEdge(add_edge_u.getValue(), add_edge_v.getValue(), weight);
+							int weight = Integer.parseInt(add_edge_weight.getText()); // prende il peso dal campo input
+							if(!add_edge_u.getValue().equals(add_edge_v.getValue()))
+								graph.insertEdge(add_edge_u.getValue(), add_edge_v.getValue(), weight); // utilizza i valori delle due tendine
+							else
+								throw new Exception("same value");
 							initializeGraph();
+							status.setText("Okay");
 						}
 						catch(Exception e) {
 							status.setText("invalid operation");
@@ -121,9 +143,12 @@
 	            				if (node.getElement().equals(vs))
 	            					v = node;
 	            				}
-	            			if (u != null && v!= null)
+	            			if (u != null && v!= null) // nel caso uno dei nodi non fosse specificato
 	            				graph.deleteEdge(u, v);
+	            			else
+	            				throw new Exception("Wrong format");
 	            			initializeGraph();
+	            			status.setText("Okay");
 	            		}
 	            		catch( Exception e) {
 	            			status.setText("invalid operation");
@@ -136,12 +161,13 @@
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
-							if(add_node_field.getText() == null || add_node_field.getText().length() > 1 )
-								status.setText("invalid entry");
+							if(add_node_field.getText() == null || add_node_field.getText().length() > 1 ) // check per eventuale non conformita dell'input
+								throw new Exception("Invalid entry");
 							else
 								{
 								graph.insertNode(new Node<String>(add_node_field.getText()));
 								initializeGraph();
+								status.setText("Okay");
 								}
 							}
 						catch(Exception e) {
@@ -173,23 +199,7 @@
 	            	
 	            });
 	            
-		        cost_column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Entry<String, Integer>, Integer>, ObservableValue<Integer>>() {
-		            @Override
-		            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Entry<String, Integer>, Integer> p) {
-		                return new SimpleObjectProperty<Integer>(p.getValue().getValue());
-		            }
-		        });
-	
-	
-		            
-		        choice_box_startbellman.setOnMouseClicked(new EventHandler<MouseEvent>() { // se uno agisce su tendina per inizio bellman riparte da zero
-		    		 
-		            @Override
-		            public void handle(MouseEvent t) {
-		            	cost_table.getItems().removeAll(cost_table.getItems());
-		            	step = -1;
-		            }
-		        });
+		        
 		       
 		        
 		       
@@ -199,13 +209,13 @@
 		            @Override
 		            public void handle(MouseEvent t) {
 		            	step = -1;
-		            	graph = new Graph<String>();
+		            	graph = new Graph();
 		    			for(int i = 0; i < choice_box_nodes.getValue(); i++)
 		    				graph.insertNode(new Node<String>(String.valueOf(i)));
 		    				
 		    			for(Node<String> start_node : graph.V()) 
 		    				for(Node<String> end_node : graph.V()) 
-			    				if(random.nextInt(100) < 25 && !start_node.equals(end_node))
+			    				if(random.nextInt(100) < 25 && !start_node.equals(end_node)) // per ogni coppia di nodi genera un arco con probabilita del 25 percento
 			    					graph.insertEdge(start_node, end_node, random.nextInt(10) - 2);	
 		    			initializeGraph();
 		            }
@@ -217,7 +227,7 @@
 		            public void handle(MouseEvent t) {  
 		    			HashMap<String, HashMap<String, Integer>> hash = new HashMap<String, HashMap<String, Integer>>();
 		    			step = -1;
-			            graph = new Graph<String>();
+			            graph = new Graph();
 		            	FileChooser fileChooser = new FileChooser();
 		    			fileChooser.setTitle("Open Resource File");
 		    			File selected_file = fileChooser.showOpenDialog(view_pane.getScene().getWindow());	
@@ -238,8 +248,8 @@
 										hash.get(line.split("->")[0]).put(s.split(",")[0], Integer.decode(s.split(",")[1]));
 									}
 								line = reader.readLine();
-								reader.close();
 							}
+							reader.close();
 							for(Entry<String, HashMap<String, Integer>> node : hash.entrySet()) {
 								graph.insertNode(new Node<String>(node.getKey()));
 							}
@@ -284,14 +294,13 @@
 		                
 		                //Show save file dialog
 		              	File selected_file = fileChooser.showSaveDialog(view_pane.getScene().getWindow());	
-              			System.out.println(selected_file);
 
 		              	if (selected_file == null) {
 		    				return;
 		    			}
 		              	try {
 		              		PrintWriter writer = new PrintWriter(selected_file, "UTF-8");
-		              		for (Node<String> start_node : graph.V()) {
+		              		for (Node<String> start_node : graph.V()) { // per ogni nodo salva su file NODO -> arco1,costo1; arco2, costo2; .....
 		              			line = start_node + "->";
 		              			for (Entry<Node<String>, Integer> edge : graph.adj_edges(start_node)) {
 		              				line += edge.getKey() + "," + edge.getValue() + ";";
@@ -304,6 +313,7 @@
 							
 						}
 		    			 catch (Exception e) {
+		    				status.setText("Error saving");
 							e.printStackTrace();
 						}
 
@@ -312,18 +322,34 @@
 		    	
 		    	
 		    	
-		    	full_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    	full_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() { // utilizzando l'ultimo valore dell' array  di risultati di bellmanford generato ottengo i costi minimi
 		    		@Override
 		            public void handle(MouseEvent t) {
-		    			if(graph==null || graph.V().size() < 1) {
-		    				status.setText("Can't do bellmanford because no nodes");
-		    				return;
+		    			try {
+			    			ArrayList<HashMap<String, Integer>> bellman_array = graph.doBellmanFord(choice_box_startbellman.getValue());
+			    			if (bellman_array.size() == 0)
+		    					throw new Exception("Cycle");
+			    			ArrayList<HashMap<String, String>> array = new ArrayList<HashMap<String, String>> (); //Cambiare tipo hash map per renderla string -> string
+			    			for(int i = 0; i < bellman_array.size(); i++) {
+			    				array.add(new HashMap<String, String>());
+			    				for(Entry<String, Integer> entry : bellman_array.get(i).entrySet()) {
+			    					String tmp;
+			    					if (entry.getValue() < Integer.MAX_VALUE / 2)
+			    						tmp = entry.getValue().toString();
+			    					else
+			    						tmp = "Infinity";
+			    					array.get(i).put(entry.getKey(), tmp);
+			    				}
+				
+			    			}
+			    			HashMap<String, String> map = array.get(array.size() - 2);
+			    	        ObservableList<Entry<String, String>> items = FXCollections.observableArrayList(map.entrySet());
+			    	        cost_table.setItems(items);
+			    	        status.setText("Okay");
 		    			}
-		    			else
-		    				status.setText("Okay");
-		    			HashMap<String, Integer> map = graph.doBellmanFord(choice_box_startbellman.getValue()).get(graph.doBellmanFord("0").size() - 2);
-		    	        ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
-		    	        cost_table.setItems(items);
+		    			catch(Exception e) {
+		    				status.setText("Can't do bellmanford");
+		    			}
 	
 		    		}
 		    	});
@@ -331,46 +357,71 @@
 		    	step_bellman_ford.setOnMouseClicked(new EventHandler<MouseEvent>() { // azione su bellman ford passo per passo, e' utilizzato step come ausilio
 		    		@Override
 		            public void handle(MouseEvent t) {
-		    			if(graph==null || graph.V().size() < 1) {
-		    				status.setText("Can't do bellmanford because no nodes");
-		    				return;
-		    			}
-		    			else
-		    				status.setText("Okay");
 		    			
-		    			HashMap<String, Integer> old_items = new HashMap<String, Integer> ();
-		    			ArrayList<HashMap<String, Integer>> array = graph.doBellmanFord(choice_box_startbellman.getValue().toString()); // array con mappa che associa nodo destinazione costo
-		    			if(step < array.size() - 1) {
-		    				step ++;
-		    				if(step > 0)
-		    					old_items = array.get(step - 1);
-		    			}
-		    			
-		    			HashMap<String, Integer> map = array.get(step);
-		    			ObservableList<Entry<String, Integer>> items = FXCollections.observableArrayList(map.entrySet());
-		    			if(! old_items.entrySet().equals(map.entrySet()) && map.entrySet().size() > 0) {
-		    				cost_table.getItems().removeAll(cost_table.getItems());
-		    				cost_table.setItems(items);
-		    	        }
-		    			
-		    			for(javafx.scene.Node child : view_pane.getChildren()) {
-		    				if (child.getClass() == Circle.class) {
-		    					Circle circle = (Circle) child;
-    							circle.setFill(javafx.scene.paint.Color.RED);
+		    			try {
+		    				if(graph==null || graph.V().size() < 1) 
+		    					throw new Exception("No nodes");
+			    			
+		    				HashMap<String, String> old_items = new HashMap<String, String> ();
+		    				ArrayList<HashMap<String, Integer>> bellman_array = graph.doBellmanFord(choice_box_startbellman.getValue().toString()); // array con mappa che associa nodo destinazione costo
+		    				if (bellman_array.size() == 0)
+		    					throw new Exception("Cycle");
+		    				
+		    				ArrayList<HashMap<String, String>> array = new ArrayList<HashMap<String, String>> (); //Cambiare tipo hash map per renderla string -> string
+		    				for(int i = 0; i < bellman_array.size(); i++) {
+		    					array.add(new HashMap<String, String>());
+		    					for(Entry<String, Integer> entry : bellman_array.get(i).entrySet()) {
+		    						String tmp;
+		    						if (entry.getValue() < Integer.MAX_VALUE / 2)
+		    							tmp = entry.getValue().toString();
+		    						else
+		    							tmp = "Infinity"; // se valore entry nel range dell'infinito scrivo infinity nel campo
+		    						array.get(i).put(entry.getKey(), tmp);
+		    					}
+			
 		    				}
-		    			}
 		    			
-		    			for(javafx.scene.Node child : view_pane.getChildren()) {
-		    				if (child.getClass() == Circle.class) {
-		    					if(step >= 1 && map.get(child.getId()) < array.get(step - 1).get(child.getId())){
+		    				if(step < array.size() - 1) { // incremento contatore globale step
+		    					step ++;
+		    					if(step > 0)
+		    						old_items = array.get(step - 1);
+		    				}
+		    			
+		    				HashMap<String, String> map = array.get(step);
+		    				HashMap<String, Integer> int_map = bellman_array.get(step);
+
+		    				ObservableList<Entry<String, String>> items = FXCollections.observableArrayList(map.entrySet());
+		    				if(! old_items.entrySet().equals(map.entrySet()) && map.entrySet().size() > 0) {
+		    					cost_table.getItems().removeAll(cost_table.getItems());
+		    					cost_table.setItems(items);
+		    				}
+		    			
+		    				for(javafx.scene.Node child : view_pane.getChildren()) { // rimetto i nodi tutti rossi ad ogni step
+		    					if (child.getClass() == Circle.class) {
 		    						Circle circle = (Circle) child;
-	    							circle.setFill(javafx.scene.paint.Color.BLUE);
+		    						circle.setFill(javafx.scene.paint.Color.RED);
 		    					}
 		    				}
+		    			
+		    				for(javafx.scene.Node child : view_pane.getChildren()) { // i nodi che hanno migliorato il costo divengono blu
+		    					if (child.getClass() == Circle.class) {
+		    						if(step >= 1 && int_map.get(child.getId()) < bellman_array.get(step - 1).get(child.getId()) && int_map.get(child.getId()) < Integer.MAX_VALUE / 2){
+		    							Circle circle = (Circle) child;
+		    							circle.setFill(javafx.scene.paint.Color.BLUE);
+		    						}
+		    					}
+		    				}
+	    					status.setText("Okay");
+
+		    			
+		    			}
+		    			catch (Exception e) {
+							e.printStackTrace();
+
+		    				status.setText("Error, possible cycle");
 		    			}
 		    			
-		    		}
-		    	});
+		    		}});
 		    		
 		    	
 		    }
@@ -404,7 +455,7 @@
 				
 				remove_edge_field.setItems(FXCollections.observableList(edges));
 				
-
+				step = -1;
 
 
 
