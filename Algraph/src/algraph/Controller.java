@@ -18,7 +18,8 @@
 	import javafx.scene.input.MouseEvent;
 	import javafx.scene.layout.AnchorPane;
 	import javafx.scene.layout.Pane;
-	import javafx.stage.FileChooser;
+import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 	import javafx.util.Callback;
 	import java.io.BufferedReader;
 	import java.io.File;
@@ -366,17 +367,21 @@
 		    				ArrayList<HashMap<String, Integer>> bellman_array = graph.doBellmanFord(choice_box_startbellman.getValue().toString()); // array con mappa che associa nodo destinazione costo
 		    				if (bellman_array.size() == 0)
 		    					throw new Exception("Cycle");
-		    				
+		    				ArrayList<String> nodes_array = new ArrayList<String>();
 		    				ArrayList<HashMap<String, String>> array = new ArrayList<HashMap<String, String>> (); //Cambiare tipo hash map per renderla string -> string
 		    				for(int i = 0; i < bellman_array.size(); i++) {
 		    					array.add(new HashMap<String, String>());
 		    					for(Entry<String, Integer> entry : bellman_array.get(i).entrySet()) {
-		    						String tmp;
-		    						if (entry.getValue() < Integer.MAX_VALUE / 2)
-		    							tmp = entry.getValue().toString();
+		    						if(!entry.getKey().contains("!")) {
+			    						String tmp;
+			    						if (entry.getValue() < Integer.MAX_VALUE / 2)
+			    							tmp = entry.getValue().toString();
+			    						else
+			    							tmp = "Infinity"; // se valore entry nel range dell'infinito scrivo infinity nel campo
+			    						array.get(i).put(entry.getKey(), tmp);
+		    						}
 		    						else
-		    							tmp = "Infinity"; // se valore entry nel range dell'infinito scrivo infinity nel campo
-		    						array.get(i).put(entry.getKey(), tmp);
+		    							nodes_array.add(new String("" + (char) entry.getKey().charAt(0)));
 		    					}
 			
 		    				}
@@ -400,14 +405,20 @@
 		    					if (child.getClass() == Circle.class) {
 		    						Circle circle = (Circle) child;
 		    						circle.setFill(javafx.scene.paint.Color.RED);
-		    					}
+		    						circle.setStroke(Color.BLACK);
+	    							circle.setStrokeWidth(0);
+		    						}
 		    				}
 		    			
 		    				for(javafx.scene.Node child : view_pane.getChildren()) { // i nodi che hanno migliorato il costo divengono blu
 		    					if (child.getClass() == Circle.class) {
+		    						Circle circle = (Circle) child;
 		    						if(step >= 1 && int_map.get(child.getId()) < bellman_array.get(step - 1).get(child.getId()) && int_map.get(child.getId()) < Integer.MAX_VALUE / 2){
-		    							Circle circle = (Circle) child;
 		    							circle.setFill(javafx.scene.paint.Color.BLUE);
+		    						}
+		    						if(child.getId().equals(nodes_array.get(step))) {
+		    							circle.setStroke(Color.BLACK);
+		    							circle.setStrokeWidth(3);
 		    						}
 		    					}
 		    				}

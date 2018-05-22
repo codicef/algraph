@@ -140,25 +140,25 @@ public class Graph implements IGraph<String> {
 
 	public ArrayList<HashMap<String, Integer>> doBellmanFord(String start){ //implementazione dell'algoritmo di bellman ford
 		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
-		
 		int j = 0;
 		M.add(new HashMap<String, Integer> ());
 		for(Node<String> node : this.V()) {
 			M.get(j).put(node.toString(), Integer.MAX_VALUE - 100); // val = infinito
 		}
 		M.get(j).put(start, 0);
-
+		M.get(j).put(start + "!", 0);
 		for(int i = 1; i < this.V().size(); i ++) {
 			for(Node<String> start_node : this.V()) {
 				j ++;
 				M.add(new HashMap<String, Integer> ());
 				for(Node<String> node : this.V())
 					M.get(j).put(node.toString(), M.get(j - 1).get(node.toString()));
+				M.get(j).put(start_node.toString() + "!", 0); //utilizzato per questioni grafiche dalle funzioni utilizzatrici
 
 				for(Entry<Node<String>, Integer> end_node : this.adj_edges(start_node)) {
 					M.get(j).put(end_node.getKey().toString(), M.get(j - 1).get(end_node.getKey().toString()));
 					M.get(j).put(end_node.getKey().toString(), Math.min(M.get(j).get(end_node.getKey().toString()), end_node.getValue() + M.get(j).get(start_node.toString())));	
-			
+					
 				}
 			}
 		}
