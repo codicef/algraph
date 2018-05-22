@@ -28,7 +28,6 @@ public class AlgraphMain extends Application {
 	    	primaryStage.setScene(scene);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	

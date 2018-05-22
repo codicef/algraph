@@ -2,15 +2,13 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-//perch� abbiamo usato un treeset e non un hashset? domanda pi� probabile del sorgere del sole
-//import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 
 public class Graph implements IGraph<String> {
-	// Global variabili per funzione isCyclic
+	//variabili Globali per funzione isCyclic
 	HashMap<String, Integer> dt; 
 	HashMap<String, Integer> ft; 
 
@@ -69,7 +67,7 @@ public class Graph implements IGraph<String> {
 	@Override
 	public Set<Node<String>> adj(Node<String> u) { // ritorna i nodi adiacenti ad un dato nodo
 
-		Set<Node<String>> adjSet = new TreeSet<Node<String>>();
+		Set<Node<String>> adjSet = new HashSet<Node<String>>();
 
 		if (this.vertexes.containsKey(u)) {
 			adjSet = this.vertexes.get(u).keySet();
@@ -79,7 +77,7 @@ public class Graph implements IGraph<String> {
 	}
 	
 	public Set<Entry<Node<String>, Integer>> adj_edges(Node<String> u) { // ritorna gli archi adiacenti
-		Set<Entry<Node<String>, Integer>> adjSet = new TreeSet<Entry<Node<String>, Integer>>();
+		Set<Entry<Node<String>, Integer>> adjSet = new HashSet<Entry<Node<String>, Integer>>();
 
 		if (this.vertexes.containsKey(u)) {
 				adjSet = this.vertexes.get(u).entrySet();
@@ -120,7 +118,7 @@ public class Graph implements IGraph<String> {
 		}
 	}
 
-	public Boolean isCyclic(Node<String> U) { // Implementezione funzione da libro Bertossi/Montresor
+	public Boolean isCyclic(Node<String> U) { // Implementazione funzione da libro Bertossi/Montresor
 			time ++; 
 			dt.put(U.toString(), time);
 		    for(Node<String> v : this.adj(U)) {
@@ -141,12 +139,18 @@ public class Graph implements IGraph<String> {
 	public ArrayList<HashMap<String, Integer>> doBellmanFord(String start){ //implementazione dell'algoritmo di bellman ford
 		ArrayList<HashMap<String, Integer>> M = new ArrayList<HashMap<String, Integer>>();
 		int j = 0;
+		//inizializzazione
 		M.add(new HashMap<String, Integer> ());
 		for(Node<String> node : this.V()) {
 			M.get(j).put(node.toString(), Integer.MAX_VALUE - 100); // val = infinito
 		}
 		M.get(j).put(start, 0);
+
 		M.get(j).put(start + "!", 0);
+
+		
+		//rilassamento archi
+
 		for(int i = 1; i < this.V().size(); i ++) {
 			for(Node<String> start_node : this.V()) {
 				j ++;
