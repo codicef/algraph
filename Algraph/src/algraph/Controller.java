@@ -424,7 +424,7 @@ import javafx.stage.FileChooser;
 		    						}
 		    					}
 		    				}
-	    					status.setText("Okay");
+	    					status.setText("Ok");
 
 		    			
 		    			}
