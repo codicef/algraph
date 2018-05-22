@@ -149,7 +149,7 @@ import javafx.stage.FileChooser;
 	            			else
 	            				throw new Exception("Wrong format");
 	            			initializeGraph();
-	            			status.setText("Ok");
+	            			status.setText("Removed");
 	            		}
 	            		catch( Exception e) {
 	            			status.setText("Invalid operation");
@@ -162,17 +162,20 @@ import javafx.stage.FileChooser;
 					@Override
 					public void handle(MouseEvent arg0) {
 						try {
+							for(Node<String> node : graph.V())
+								if(add_node_field.getText().equals(node.toString()))
+									throw new Exception("Invalid entry");
 							if(add_node_field.getText() == null || add_node_field.getText().length() > 1 ) // check per eventuale non conformita dell'input
 								throw new Exception("Invalid entry");
 							else
 								{
-								graph.insertNode(new Node<String>(add_node_field.getText()));
-								initializeGraph();
-								status.setText("Okay");
+									graph.insertNode(new Node<String>(add_node_field.getText()));
+									initializeGraph();
+									status.setText("Done");
 								}
 							}
 						catch(Exception e) {
-							status.setText("invalid operation");
+							status.setText("Invalid operation");
 						}
 					}
 		        	
@@ -192,9 +195,10 @@ import javafx.stage.FileChooser;
 								}
 							}
 							initializeGraph();
+							status.setText("Done");
 						}
 						catch(Exception e) {
-							status.setText("invalid operation");
+							status.setText("Invalid operation");
 						}
 					}
 	            	
@@ -219,8 +223,10 @@ import javafx.stage.FileChooser;
 			    				if(random.nextInt(100) < 25 && !start_node.equals(end_node)) // per ogni coppia di nodi genera un arco con probabilita del 25 percento
 			    					graph.insertEdge(start_node, end_node, random.nextInt(10) - 2);	
 		    			initializeGraph();
+		    			status.setText("Done");
 		            }
 		         });
+		    	
 		    	
 		    	file_gen.setOnMouseClicked(new EventHandler<MouseEvent>() { // generazione del grafo a partire dal file
 		    		
@@ -287,7 +293,7 @@ import javafx.stage.FileChooser;
 		    				return;
 		    			}
 		    			else
-		    				status.setText("Ok");
+		    				status.setText("Okay");
 		    			String line;
 		            	FileChooser fileChooser = new FileChooser();
 		    			fileChooser.setTitle("Save Graph File");
@@ -335,12 +341,15 @@ import javafx.stage.FileChooser;
 			    			for(int i = 0; i < bellman_array.size(); i++) {
 			    				array.add(new HashMap<String, String>());
 			    				for(Entry<String, Integer> entry : bellman_array.get(i).entrySet()) {
-			    					String tmp;
-			    					if (entry.getValue() < Integer.MAX_VALUE / 2)
-			    						tmp = entry.getValue().toString();
-			    					else
-			    						tmp = "Infinity";
-			    					array.get(i).put(entry.getKey(), tmp);
+			    					if(!entry.getKey().contains("!")) {
+			    						String tmp;
+			    						if (entry.getValue() < Integer.MAX_VALUE / 2)
+			    							tmp = entry.getValue().toString();
+			    						else
+			    							tmp = "Infinity"; // se valore entry nel range dell'infinito scrivo infinity nel campo
+			    						array.get(i).put(entry.getKey(), tmp);
+		    						}
+		    						
 			    				}
 				
 			    			}
@@ -424,7 +433,7 @@ import javafx.stage.FileChooser;
 		    						}
 		    					}
 		    				}
-	    					status.setText("Ok");
+	    					status.setText("Done");
 
 		    			
 		    			}

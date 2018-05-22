@@ -85,7 +85,7 @@ public class Graph implements IGraph<String> {
 		return adjSet;
 	}
    
-	public HashMap<Node<String>, HashMap<Node<String>, Integer>> getVertexes() {
+	public HashMap<Node<String>, HashMap<Node<String>, Integer>> getVertexes() { // returna l'hashmap
 		return vertexes;
 	}
 
@@ -146,7 +146,7 @@ public class Graph implements IGraph<String> {
 		}
 		M.get(j).put(start, 0);
 
-		M.get(j).put(start + "!", 0);
+		M.get(j).put(start + "!", 0); //utilizzato per questioni grafiche dalle funzioni utilizzatrici
 
 		
 		//rilassamento archi
