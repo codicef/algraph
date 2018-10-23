@@ -25,6 +25,6 @@ java -jar Algraph.jar
 
 **Authors:**
 
--[codicef](https://github.com/codicef)
+- [codicef](https://github.com/codicef)
 
--[Orasz](https://github.com/Orasz)
+- [Orasz](https://github.com/Orasz)
