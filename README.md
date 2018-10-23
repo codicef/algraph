@@ -17,7 +17,9 @@ It is possible to create a graph through the GUI interface or uploading it by fi
 
 How to execute:
 
-**java -jar Algraph.jar**
+```bash
+java -jar Algraph.jar
+```
 
 :boy:
 
